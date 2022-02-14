@@ -9,5 +9,5 @@ void move_motors(motor_side side, float arbitrary_unit)
 		return;
 	case Right:
 		return;
-	}  // switch()
-}
+	}  // switch (side)
+}  // move_motors(motor_side side, float arbitrary_unit)

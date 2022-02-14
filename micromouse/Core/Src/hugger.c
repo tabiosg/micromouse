@@ -19,25 +19,28 @@ void do_hug_left_algorithm()
 			rotate_180_degrees();
 			go_forward();
 		}
-		// There is no wall on right
-		rotate_direction(RIGHT);
-		go_forward();
+		else
+		{
+			// There is no wall on right
+			rotate_direction(RIGHT);
+			go_forward();
+		}  // if (is_there_wall_on_direction(RIGHT))
 	}
 	else
 	{
 		// Just go forward if there is no wall in front but a wall on left
 		go_forward();
-	}  // if()
+	}  // if ()
 
 	if (found_destination())
 	{
 		return;
-	}
+	}  // if (found_destination())
 
 	return do_hug_left_algorithm();
-}
+}  // do_hug_left_algorithm()
 
 uint8_t found_destination()
 {
 	return 0;
-}
+}  // found_destination()

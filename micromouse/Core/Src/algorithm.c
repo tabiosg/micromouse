@@ -14,7 +14,7 @@ uint8_t determine_algorithm()
 	}  // switch()
 
 	return -1;
-}
+}  // determine_algorithm()
 
 void do_search_algorithm(algorithm_type algo)
 {
@@ -31,8 +31,7 @@ void do_search_algorithm(algorithm_type algo)
 	case Flood_Fill_Algo:
 		return; // TODO
 	}  // switch()
-
-}
+}  // do_search_algorithm(algorithm_type algo)
 
 void complete_search_algorithm()
 {
@@ -40,5 +39,4 @@ void complete_search_algorithm()
 	turn_LEDs_all(Off);
 	turn_LED(Red, On);
 	turn_LED(Green, On);
-
-}
+}  // complete_search_algorithm()

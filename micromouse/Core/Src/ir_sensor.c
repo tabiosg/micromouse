@@ -11,7 +11,7 @@ uint8_t is_there_wall_on_direction(direction d)
 		return 1;
 	case RIGHT:
 		return 1;
-	}  // switch()
+	}  // switch (d)
 
 	return -1;
-}
+}  // is_there_wall_on_direction(direction d)

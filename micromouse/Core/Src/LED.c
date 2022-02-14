@@ -8,13 +8,20 @@ void turn_LEDs_all(LED_state state)
 	for (int led_col = color_first; led_col <= color_last; ++led_col)
 	{
 		turn_LED(led_col, state);
-	}  // for()
-}
+	}  // for ()
+}  // turn_LEDs_all(LED_state state)
 
 void turn_LED(LED_color col, LED_state state)
 {
-
-}
+	switch (state)
+	{
+	case Off:
+		turn_off_LED_color(col);
+		return;
+	case On:
+		turn_on_LED_color(col);
+	}
+}  // turn_LED(LED_color col, LED_state state)
 
 void turn_off_LED_color(LED_color col)
 {
@@ -29,9 +36,8 @@ void turn_off_LED_color(LED_color col)
 		return;
 	case Yellow:
 		return;
-	}  // switch()
-
-}
+	}  // switch (col)
+}  // turn_off_LED_color(LED_color col)
 
 void turn_on_LED_color(LED_color col)
 {
@@ -46,6 +52,5 @@ void turn_on_LED_color(LED_color col)
 		return;
 	case Yellow:
 		return;
-	}  // switch()
-
-}
+	}  // switch (col)
+}  // turn_on_LED_color(LED_color col)
