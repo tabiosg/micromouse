@@ -1,6 +1,8 @@
 #ifndef INC_LED_H_
 #define INC_LED_H_
 
+#include "main.h"
+
 typedef enum
 {
 	Red, Blue, Green, Yellow

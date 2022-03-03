@@ -4,10 +4,11 @@
 #include "hugger.h"
 #include "switch.h"
 #include "LED.h"
+#include "test.h"
 
 typedef enum
 {
-	Hug_Left_Algo, Flood_Fill_Algo
+	Hug_Left_Algo, Flood_Fill_Algo, Test_Algo
 } algorithm_type;
 
 uint8_t determine_algorithm();

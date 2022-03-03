@@ -50,6 +50,8 @@ extern "C" {
 
 /* USER CODE END EM */
 
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
+
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 
@@ -58,7 +60,27 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define SERVO_PWM_Pin GPIO_PIN_0
+#define SERVO_PWM_GPIO_Port GPIOA
+#define SONIC_ECHO_Pin GPIO_PIN_1
+#define SONIC_ECHO_GPIO_Port GPIOA
+#define YELLOW_LED_Pin GPIO_PIN_5
+#define YELLOW_LED_GPIO_Port GPIOA
+#define PUSH_BUTTON_Pin GPIO_PIN_6
+#define PUSH_BUTTON_GPIO_Port GPIOA
+#define SONIC_TRIGGER_Pin GPIO_PIN_15
+#define SONIC_TRIGGER_GPIO_Port GPIOB
+#define RIGHT_PWM_Pin GPIO_PIN_7
+#define RIGHT_PWM_GPIO_Port GPIOC
+#define RIGHT_DIR_Pin GPIO_PIN_8
+#define RIGHT_DIR_GPIO_Port GPIOA
+#define LEFT_DIR_Pin GPIO_PIN_9
+#define LEFT_DIR_GPIO_Port GPIOA
+#define LEFT_PWM_Pin GPIO_PIN_6
+#define LEFT_PWM_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
+
+extern TIM_HandleTypeDef htim5;
 
 /* USER CODE END Private defines */
 
@@ -67,5 +89,3 @@ void Error_Handler(void);
 #endif
 
 #endif /* __MAIN_H */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

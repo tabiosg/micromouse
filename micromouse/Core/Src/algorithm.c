@@ -3,14 +3,18 @@
 uint8_t determine_algorithm()
 {
 	// TODO - fix once begin implementing different algorithms
-	uint8_t determined_algorithm = is_switch_on();
 
-	switch (determined_algorithm)
+	uint8_t determined_algorithm = is_switch_on();
+	determined_algorithm = Test_Algo;  // TODO - Remove when not testing
+
+	switch(determined_algorithm)
 	{
 	case 0:
 		return Hug_Left_Algo;
 	case 1:
 		return Flood_Fill_Algo;
+	case 2:
+		return Test_Algo;
 	}  // switch()
 
 	return -1;
@@ -23,11 +27,13 @@ void do_search_algorithm(algorithm_type algo)
 	turn_LED(Red, On);
 	turn_LED(Blue, On);
 
-	switch (algo)
+	switch(algo)
 	{
 	case Hug_Left_Algo:
 		do_hug_left_algorithm();
 		return;
+	case Test_Algo:
+		do_test_algorithm();
 	case Flood_Fill_Algo:
 		return; // TODO
 	}  // switch()

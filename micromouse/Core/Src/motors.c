@@ -1,13 +1,28 @@
 #include "motors.h"
 
-void move_motors(motor_side side, float arbitrary_unit)
+void set_motor_speed(motor_side side, int16_t speed400)
 {
-	// TODO - also probably change from arbitary_unit to a different measurement unit
-	switch (side)
+	// speed400 is a number in [-400, 400]
+	switch(side)
 	{
-	case Left:
+	case Left_Motor:
+		HAL_GPIO_WritePin(LEFT_DIR_GPIO_Port, LEFT_DIR_Pin, speed400 > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
+		TIM4->CCR1 = speed400 > 0 ? speed400 : -speed400;
 		return;
-	case Right:
+	case Right_Motor:
+		HAL_GPIO_WritePin(RIGHT_DIR_GPIO_Port, RIGHT_DIR_Pin, speed400 > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
+		TIM3->CCR2 = speed400 > 0 ? speed400 : -speed400;
 		return;
-	}  // switch (side)
-}  // move_motors(motor_side side, float arbitrary_unit)
+	}  // switch(side)
+}  // set_motor_speed(motor_side side, int16_t speed400)
+
+void stop_motors(motor_side side)
+{
+	set_motor_speed(side, 0);
+}  // stop_motors(motor_side side)
+
+void stop_all_motors()
+{
+	set_motor_speed(Left_Motor, 0);
+	set_motor_speed(Right_Motor, 0);
+}  // stop_all_motors()

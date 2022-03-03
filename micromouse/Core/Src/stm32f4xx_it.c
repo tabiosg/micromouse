@@ -23,6 +23,7 @@
 #include "stm32f4xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "ultrasonic.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -56,7 +57,7 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-
+extern TIM_HandleTypeDef htim5;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -199,7 +200,36 @@ void SysTick_Handler(void)
 /* please refer to the startup file (startup_stm32f4xx.s).                    */
 /******************************************************************************/
 
+/**
+  * @brief This function handles TIM5 global interrupt.
+  */
+void TIM5_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM5_IRQn 0 */
+
+  /* USER CODE END TIM5_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim5);
+  /* USER CODE BEGIN TIM5_IRQn 1 */
+  if (risingEdgeInterrupt == 1)
+  {
+	  TIM5->CNT = 0;
+	  TIM5->CCER = (TIM5->CCER & ~(0b1010)) | 0b0010;
+	  risingEdgeInterrupt = 0;
+  }
+  else
+  {
+	  counter = TIM5->CNT;
+	  TIM5->CCER = (TIM5->CCER & ~(0b1010)) | 0b0000;
+	  float inches = counter / 144.0;
+	  centimeters = inches * 2.54;
+	  risingEdgeInterrupt = 1;
+	  __HAL_TIM_DISABLE_IT(&htim5, TIM_IT_CC2);
+  }
+
+  /* USER CODE END TIM5_IRQn 1 */
+}
+
 /* USER CODE BEGIN 1 */
 
 /* USER CODE END 1 */
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+
