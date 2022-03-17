@@ -8,56 +8,56 @@
 typedef enum
 {
 	North, East, South, West, Unknown
-} Maze_Direction;
+} maze_direction;
 
 typedef enum
 {
 	No_Wall_Here, Wall_Here
-} Wall_Bool;
+} wall_bool;
 
 typedef enum
 {
 	Is_Not_Visited, Is_Visited
-} Visited_Bool;
+} visited_bool;
 
 typedef struct
 {
 	uint8_t walls[4];
 	uint8_t visited;
-} Cell;
+} cell;
 
 typedef struct
 {
-	Cell cell_grid[16][16];
+	cell cell_grid[16][16];
 	uint8_t distance_grid[16][16];
-} Flood_Fill_Maze;
+} flood_fill_maze;
 
 typedef struct
 {
 	uint8_t x;
 	uint8_t y;
-} Coordinate;
+} coordinate;
 
 typedef struct
 {
-	Coordinate coordinates[256];
+	coordinate coordinates[256];
 	uint8_t index;
-} Stack;
+} stack;
 
-void do_floodfill_algorithm();
+void do_flood_fill_algorithm();
 
-uint8_t stack_is_empty(Stack *s);
+uint8_t stack_is_empty(stack *s);
 
-Coordinate pop_stack(Stack *s);
+coordinate pop_stack(stack *s);
 
-void push_stack(Stack *s, Coordinate *c);
+void push_stack(stack *s, coordinate *c);
 
-void move_forward_and_update(Maze_Direction d, Coordinate *c, Flood_Fill_Maze *m);
+void move_forward_and_update(maze_direction d, coordinate *c, flood_fill_maze *m);
 
-Maze_Direction minus_one_neighbor(Flood_Fill_Maze *maze, Coordinate *c, Stack *s);
+maze_direction minus_one_neighbor(flood_fill_maze *maze, coordinate *c, stack *s);
 
-uint8_t found_flood_fill_destination(Coordinate *c, Flood_Fill_Maze *maze);
+uint8_t found_flood_fill_destination(coordinate *c, flood_fill_maze *maze);
 
-void init_coordinate(Coordinate *c, uint8_t x, uint8_t y);
+void init_coordinate(coordinate *c, uint8_t x, uint8_t y);
 
 #endif /* INC_FLOOD_FILL_H_ */

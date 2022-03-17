@@ -60,8 +60,6 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define SERVO_PWM_Pin GPIO_PIN_0
-#define SERVO_PWM_GPIO_Port GPIOA
 #define SONIC_ECHO_Pin GPIO_PIN_1
 #define SONIC_ECHO_GPIO_Port GPIOA
 #define YELLOW_LED_Pin GPIO_PIN_5
@@ -76,6 +74,8 @@ void Error_Handler(void);
 #define RIGHT_DIR_GPIO_Port GPIOA
 #define LEFT_DIR_Pin GPIO_PIN_9
 #define LEFT_DIR_GPIO_Port GPIOA
+#define SERVO_PWM_Pin GPIO_PIN_15
+#define SERVO_PWM_GPIO_Port GPIOA
 #define LEFT_PWM_Pin GPIO_PIN_6
 #define LEFT_PWM_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */

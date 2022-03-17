@@ -2,6 +2,7 @@
 #define INC_ALGORITHM_H_
 
 #include "hugger.h"
+#include "flood_fill.h"
 #include "switch.h"
 #include "LED.h"
 #include "test.h"

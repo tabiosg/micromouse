@@ -6,13 +6,13 @@ void set_servo_angle(direction d)
 	switch(d)
 	{
 	case Left:
-		TIM2->CCR1 = 50;
+		TIM2->CCR1 = 225;
 		return;
 	case Front:
 		TIM2->CCR1 = 150;
 		return;
 	case Right:
-		TIM2->CCR1 = 250;
+		TIM2->CCR1 = 75;
 		return;
 	}  // switch(d)
 }  // set_servo_angle(direction d)

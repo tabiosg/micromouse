@@ -3,6 +3,8 @@
 
 #include "mouse.h"
 #include "LED.h"
+#include "wall_sensor.h"
+#include "main.h"
 
 void do_test_algorithm();
 

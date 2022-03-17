@@ -35,7 +35,7 @@ void turn_off_LED_color(LED_color col)
 	case Green:
 		return;
 	case Yellow:
-		HAL_GPIO_WritePin(YELLOW_LED_GPIO_Port, YELLOW_LED_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(YELLOW_LED_GPIO_Port, YELLOW_LED_Pin, GPIO_PIN_RESET);
 		return;
 	}  // switch(col)
 }  // turn_off_LED_color(LED_color col)
@@ -52,7 +52,7 @@ void turn_on_LED_color(LED_color col)
 	case Green:
 		return;
 	case Yellow:
-		HAL_GPIO_WritePin(YELLOW_LED_GPIO_Port, YELLOW_LED_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(YELLOW_LED_GPIO_Port, YELLOW_LED_Pin, GPIO_PIN_SET);
 		return;
 	}  // switch(col)
 }  // turn_on_LED_color(LED_color col)

@@ -1,5 +1,9 @@
 #include "ultrasonic.h"
 
+int risingEdgeInterrupt;
+int counter;
+float centimeters;
+
 int16_t distance_of_object_in_cm()
 {
 	risingEdgeInterrupt = 1;

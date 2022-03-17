@@ -24,6 +24,7 @@
 /* USER CODE BEGIN Includes */
 #include "LED.h"
 #include "algorithm.h"
+#include "motors.h"
 #include "servo.h"
 
 /* USER CODE END Includes */
@@ -43,7 +44,7 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-TIM_HandleTypeDef htim2;
+ TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
 TIM_HandleTypeDef htim5;
@@ -106,7 +107,13 @@ int main(void)
   turn_LEDs_all(Off);  // Turn all colors off
   turn_LED(Red, On);  // Turn Red on to indicate state is on
   set_servo_angle(Front);  // Make sure the servo is facing forward
+  stop_all_motors();  // Make sure the car is stopped
 
+  // Enable the timers
+  HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);  // Left Motor PWM
+  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);  // Right Motor PWM
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);  // Servo Motor PWM
+  HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_2);  // Sonic Echo PWM
 
 
   uint8_t determined_algorithm = determine_algorithm();
@@ -139,6 +146,7 @@ void SystemClock_Config(void)
   */
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
@@ -150,6 +158,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+
   /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
@@ -184,9 +193,9 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 39;
+  htim2.Init.Prescaler = 159;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 1999;
+  htim2.Init.Period = 3999;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_PWM_Init(&htim2) != HAL_OK)
@@ -282,7 +291,7 @@ static void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 1 */
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 0;
+  htim4.Init.Prescaler = 79;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim4.Init.Period = 400;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -331,7 +340,7 @@ static void MX_TIM5_Init(void)
 
   /* USER CODE END TIM5_Init 1 */
   htim5.Instance = TIM5;
-  htim5.Init.Prescaler = 3;
+  htim5.Init.Prescaler = 15;
   htim5.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim5.Init.Period = 4294967295;
   htim5.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -433,4 +442,3 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-

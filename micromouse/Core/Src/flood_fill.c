@@ -3,7 +3,7 @@
 void do_flood_fill_algorithm()
 {
 	// Initialize the maze
-	Flood_Fill_Maze maze;
+	flood_fill_maze maze;
 
 	for (uint8_t i = 0; i < 16; ++i)
 	{
@@ -32,14 +32,14 @@ void do_flood_fill_algorithm()
 
 	// Do flood fill algorithm
 
-	Maze_Direction desired_direction = North;  // the direction that we want to move in next
-	Maze_Direction direction = desired_direction;  // the direction we're currently facing
-	Coordinate next_coordinate;
+	maze_direction desired_direction = North;  // the direction that we want to move in next
+	maze_direction direction = desired_direction;  // the direction we're currently facing
+	coordinate next_coordinate;
 	init_coordinate(&next_coordinate, 0, 0);
 
-	Coordinate c = next_coordinate;  // c is the coordinate that we want to be in
+	coordinate c = next_coordinate;  // c is the coordinate that we want to be in
 
-	Stack stack;
+	stack stack;
 
 	while(1)
 	{
@@ -184,24 +184,24 @@ void do_flood_fill_algorithm()
 	}  // while(1)
 }  // do_hug_left_algorithm()
 
-uint8_t stack_is_empty(Stack *s)
+uint8_t stack_is_empty(stack *s)
 {
 	return s->index == 0;
 }
 
-Coordinate pop_stack(Stack *s)
+coordinate pop_stack(stack *s)
 {
 	s->index = s->index - 1;
 	return s->coordinates[s->index + 1];
 }  // void pop_stack(Stack* s)
 
-void push_stack(Stack* s, Coordinate *c)
+void push_stack(stack* s, coordinate *c)
 {
 	s->index = s->index + 1;
 	s->coordinates[s->index] = *c;
 }  // void push_stack(Stack* s, uint8_t x, uint8_t y)
 
-void move_forward_and_update(Maze_Direction d, Coordinate *c, Flood_Fill_Maze *m)
+void move_forward_and_update(maze_direction d, coordinate *c, flood_fill_maze *m)
 {
 	switch(d)
 	{
@@ -232,14 +232,14 @@ void move_forward_and_update(Maze_Direction d, Coordinate *c, Flood_Fill_Maze *m
 	case Unknown:
 		break;
 	}  // switch(d)
-}  // void move_forward_and_update(Maze_Direction d, Coordinate *c, Flood_Fill_Maze *m)
+}  // void move_forward_and_update(maze_direction d, Coordinate *c, Flood_Fill_Maze *m)
 
-uint8_t found_flood_fill_destination(Coordinate *c, Flood_Fill_Maze *maze)
+uint8_t found_flood_fill_destination(coordinate *c, flood_fill_maze *maze)
 {
 	return maze->distance_grid[c->x][c->y] == 0;
 }  // uint8_t found_flood_fill_destination(Coordinate *c, Flood_Fill_Maze *maze)
 
-Maze_Direction minus_one_neighbor(Flood_Fill_Maze *maze, Coordinate *c, Stack *s)
+maze_direction minus_one_neighbor(flood_fill_maze *maze, coordinate *c, stack *s)
 {
 	/*
 	 This functions returns the direction that leads to what it thinks will be
@@ -312,7 +312,7 @@ Maze_Direction minus_one_neighbor(Flood_Fill_Maze *maze, Coordinate *c, Stack *s
 	{
 		if(maze->cell_grid[c->x][c->y].walls[i] == No_Wall_Here)
 		{
-			Coordinate temp;
+			coordinate temp;
 			switch(i)
 			{
 			case North:
@@ -335,7 +335,7 @@ Maze_Direction minus_one_neighbor(Flood_Fill_Maze *maze, Coordinate *c, Stack *s
 	return Unknown;
 }
 
-void init_coordinate(Coordinate *c, uint8_t x, uint8_t y)
+void init_coordinate(coordinate *c, uint8_t x, uint8_t y)
 {
 	c->x = x;
 	c->y = y;

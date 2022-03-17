@@ -6,11 +6,12 @@ void set_motor_speed(motor_side side, int16_t speed400)
 	switch(side)
 	{
 	case Left_Motor:
-		HAL_GPIO_WritePin(LEFT_DIR_GPIO_Port, LEFT_DIR_Pin, speed400 > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
+		// Low is forward
+		HAL_GPIO_WritePin(LEFT_DIR_GPIO_Port, LEFT_DIR_Pin, speed400 > 0 ? GPIO_PIN_RESET : GPIO_PIN_SET);
 		TIM4->CCR1 = speed400 > 0 ? speed400 : -speed400;
 		return;
 	case Right_Motor:
-		HAL_GPIO_WritePin(RIGHT_DIR_GPIO_Port, RIGHT_DIR_Pin, speed400 > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(RIGHT_DIR_GPIO_Port, RIGHT_DIR_Pin, speed400 > 0 ? GPIO_PIN_RESET : GPIO_PIN_SET);
 		TIM3->CCR2 = speed400 > 0 ? speed400 : -speed400;
 		return;
 	}  // switch(side)
