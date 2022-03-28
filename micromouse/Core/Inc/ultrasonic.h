@@ -2,6 +2,7 @@
 #define INC_ULTRASONIC_H_
 
 #include "main.h"
+#include "stdio.h"
 
 extern int risingEdgeInterrupt;
 extern int counter;

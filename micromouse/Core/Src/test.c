@@ -70,8 +70,11 @@ void test_alternate_360()
 void test_wall_sensor()
 {
 	uint8_t left_wall = is_there_wall_on_direction(Left);
+	HAL_Delay(1000);
 	uint8_t right_wall = is_there_wall_on_direction(Right);
+	HAL_Delay(1000);
 	uint8_t front_wall = is_there_wall_on_direction(Front);
+	HAL_Delay(1000);
 }
 
 void test_servo_angles()

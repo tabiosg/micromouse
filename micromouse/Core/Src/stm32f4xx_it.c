@@ -210,15 +210,20 @@ void TIM5_IRQHandler(void)
   /* USER CODE END TIM5_IRQn 0 */
   HAL_TIM_IRQHandler(&htim5);
   /* USER CODE BEGIN TIM5_IRQn 1 */
+
   if (risingEdgeInterrupt == 1)
   {
-	  TIM5->CNT = 0;
-//	  TIM5->CCER = (TIM5->CCER & ~(0b1010)) | 0b0010;
-	  risingEdgeInterrupt = 0;
+	TIM5->CCER &= ~(1 << 7);
+	TIM5->CCER &= ~(1 << 5);
+	TIM5->CCER |= (1 << 5);
+	TIM5->CNT = 0;
+	risingEdgeInterrupt = 0;
   }
   else
   {
 	  counter = TIM5->CNT;
+	  TIM5->CCER &= ~(1 << 7);
+	  TIM5->CCER &= ~(1 << 5);
 //	  TIM5->CCER = (TIM5->CCER & ~(0b1010)) | 0b0000;
 	  float inches = counter / 144.0;
 	  centimeters = inches * 2.54;

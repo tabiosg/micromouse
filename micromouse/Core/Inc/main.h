@@ -43,6 +43,7 @@ extern "C" {
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
 
+extern UART_HandleTypeDef huart2;
 extern UART_HandleTypeDef huart6;
 
 /* USER CODE END EC */
@@ -68,8 +69,6 @@ void Error_Handler(void);
 #define YELLOW_LED_GPIO_Port GPIOA
 #define PUSH_BUTTON_Pin GPIO_PIN_6
 #define PUSH_BUTTON_GPIO_Port GPIOA
-#define SONIC_TRIGGER_Pin GPIO_PIN_15
-#define SONIC_TRIGGER_GPIO_Port GPIOB
 #define RIGHT_PWM_Pin GPIO_PIN_7
 #define RIGHT_PWM_GPIO_Port GPIOC
 #define RIGHT_DIR_Pin GPIO_PIN_8
@@ -80,6 +79,8 @@ void Error_Handler(void);
 #define SERVO_PWM_GPIO_Port GPIOA
 #define LEFT_PWM_Pin GPIO_PIN_6
 #define LEFT_PWM_GPIO_Port GPIOB
+#define SONIC_TRIGGER_Pin GPIO_PIN_8
+#define SONIC_TRIGGER_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 extern TIM_HandleTypeDef htim5;
