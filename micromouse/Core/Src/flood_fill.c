@@ -22,10 +22,10 @@ void do_flood_fill_algorithm()
 			maze.cell_grid[i][j].walls[West] = No_Wall_Here;
 			maze.cell_grid[i][j].visited = Is_Not_Visited;
 
-			if(i == 0) maze.cell_grid[i][j].walls[West] = Wall_Here;
-			if(j == 0) maze.cell_grid[i][j].walls[South] = Wall_Here;
-			if(i == MAP_SIZE - 1) maze.cell_grid[i][j].walls[East] = Wall_Here;
-			if(j == MAP_SIZE - 1) maze.cell_grid[i][j].walls[North] = Wall_Here;
+			if(i == 0) maze.cell_grid[i][j].walls[South] = Wall_Here;
+			if(j == 0) maze.cell_grid[i][j].walls[West] = Wall_Here;
+			if(i == MAP_SIZE - 1) maze.cell_grid[i][j].walls[North] = Wall_Here;
+			if(j == MAP_SIZE - 1) maze.cell_grid[i][j].walls[East] = Wall_Here;
 
 		}  // for (uint8_t j = 0; j < MAP_SIZE; ++j)
 	}  // for (uint8_t i = 0; i < MAP_SIZE; ++i)
@@ -41,9 +41,9 @@ void do_flood_fill_algorithm()
 
 	stack stack;
 
+	print_maze(&maze, c, direction);
 	while(1)
 	{
-		print_maze(&maze, c, direction);
 		switch(direction)
 		{
 		case North:
@@ -63,13 +63,16 @@ void do_flood_fill_algorithm()
 		}  // switch(direction)
 
 		// Go forward one cell
+		printf("Going forward one unit. \r\n");
 		go_forward_one_unit();
 		// visiting_coord should now be the coordinate that we're on.
+		print_maze(&maze, c, direction);
 
 		if(!maze.cell_grid[c.x][c.y].visited)
 		{
 			if(is_there_wall_on_direction(Left))
 			{
+				printf("There is wall on left direction. \r\n");
 				maze.cell_grid[c.x][c.y].walls[(direction - 1) % 4] = Wall_Here;
 				switch(direction)
 				{
@@ -91,6 +94,7 @@ void do_flood_fill_algorithm()
 			}  // if(is_there_wall_on_direction(Left))
 			else if(is_there_wall_on_direction(Front))
 			{
+				printf("There is wall in front. \r\n");
 				maze.cell_grid[c.x][c.y].walls[direction] = Wall_Here;
 				switch(direction)
 				{
@@ -113,6 +117,7 @@ void do_flood_fill_algorithm()
 			}  // else if(is_there_wall_on_direction(Front))
 			else if(is_there_wall_on_direction(Right))
 			{
+				printf("There is wall on right. \r\n");
 				maze.cell_grid[c.x][c.y].walls[(direction + 1) % 4] = Wall_Here;
 				switch(direction)
 				{
@@ -165,16 +170,20 @@ void do_flood_fill_algorithm()
 		switch(difference % 4)
 		{
 		case 0:
+			printf("Will stay facing forward. \r\n");
 			break;
 		case 1:
+			printf("Turning left. \r\n");
 			rotate_direction_90(Left);
 			// TODO - might need to calibrate
 			break;
 		case 2:
+			printf("Turning 180 degrees. \r\n");
 			rotate_180_degrees();
 			// TODO - might need to calibrate
 			break;
 		case 3:
+			printf("Turning right. \r\n");
 			rotate_direction_90(Right);
 			// TODO - might need to calibrate
 			break;
@@ -376,15 +385,18 @@ void print_maze(flood_fill_maze *maze, coordinate c, maze_direction direction)
 		break;
 	}  // switch(i)
 
-	for (uint8_t i = 0; i < MAP_SIZE; ++i)
+	for (int8_t i = MAP_SIZE - 1; i >= 0; --i)
 	{
 		char buf[16];
 		for (uint8_t j = 0; j < MAP_SIZE; ++j)
 		{
 			buf[i] = maze_map[i][j];
+			printf("%c", maze_map[i][j]);
 		}  // for (uint8_t j = 0; j < MAP_SIZE; ++j)
 		HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
 		char buf2[30] = "\r\n";
 		HAL_UART_Transmit(&huart6, buf2, sizeof(buf2), 1000);
+
+		printf("\r\n");
 	}  // for (uint8_t i = 0; i < MAP_SIZE; ++i)
 }  // void print_maze(flood_fill_maze *m, coordinate c)

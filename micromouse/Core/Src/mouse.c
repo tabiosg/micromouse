@@ -8,6 +8,7 @@ void rotate_direction_90(direction d)
 	switch(d)
 	{
 	case Left:
+		printf("Rotating left. \r\n");
 		rotate_direction(Left);
 		HAL_Delay(445);
 		stop_all_motors();
@@ -15,6 +16,7 @@ void rotate_direction_90(direction d)
 	case Front:
 		return;
 	case Right:
+		printf("Rotating right. \r\n");
 		rotate_direction(Right);
 		HAL_Delay(445);
 		stop_all_motors();
@@ -54,6 +56,7 @@ void rotate_360_degrees(direction d)
 void go_forward_one_unit()
 {
 	// TODO - make sure numbers are precise enough. need to tune
+	printf("Heading forward. \r\n");
 	motors_forward();
 	HAL_Delay(1000);
 	stop_all_motors();

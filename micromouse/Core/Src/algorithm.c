@@ -5,7 +5,7 @@ uint8_t determine_algorithm()
 	// TODO - fix once begin implementing different algorithms
 
 	uint8_t determined_algorithm = is_switch_on();
-	determined_algorithm = Test_Algo;  // TODO - Remove when not testing
+	determined_algorithm = Flood_Fill_Algo;  // TODO - Remove when not testing
 
 	switch(determined_algorithm)
 	{
