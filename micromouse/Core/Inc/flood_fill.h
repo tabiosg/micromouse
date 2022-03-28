@@ -3,7 +3,10 @@
 
 #include <wall_sensor.h>
 #include "stdint.h"
+#include "stdio.h"
 #include "mouse.h"
+
+#define MAP_SIZE 16
 
 typedef enum
 {
@@ -28,8 +31,8 @@ typedef struct
 
 typedef struct
 {
-	cell cell_grid[16][16];
-	uint8_t distance_grid[16][16];
+	cell cell_grid[MAP_SIZE][MAP_SIZE];
+	uint8_t distance_grid[MAP_SIZE][MAP_SIZE];
 } flood_fill_maze;
 
 typedef struct
@@ -40,7 +43,7 @@ typedef struct
 
 typedef struct
 {
-	coordinate coordinates[256];
+	coordinate coordinates[MAP_SIZE * MAP_SIZE];
 	uint8_t index;
 } stack;
 
@@ -59,5 +62,7 @@ maze_direction minus_one_neighbor(flood_fill_maze *maze, coordinate *c, stack *s
 uint8_t found_flood_fill_destination(coordinate *c, flood_fill_maze *maze);
 
 void init_coordinate(coordinate *c, uint8_t x, uint8_t y);
+
+void print_maze(flood_fill_maze *maze, coordinate c, maze_direction direction);
 
 #endif /* INC_FLOOD_FILL_H_ */

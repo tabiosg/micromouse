@@ -5,7 +5,7 @@
 #include "motors.h"
 #include "main.h"
 
-void rotate_direction(direction d);
+void rotate_direction_90(direction d);
 
 void rotate_180_degrees();
 

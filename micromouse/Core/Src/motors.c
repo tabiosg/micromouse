@@ -27,3 +27,34 @@ void stop_all_motors()
 	set_motor_speed(Left_Motor, 0);
 	set_motor_speed(Right_Motor, 0);
 }  // stop_all_motors()
+
+void rotate_direction(direction d)
+{
+	// TODO - make sure numbers are precise enough. need to tune
+	switch(d)
+	{
+	case Left:
+		set_motor_speed(Left_Motor, -200);
+		set_motor_speed(Right_Motor, 200);
+		return;
+	case Front:
+		return;
+	case Right:
+		set_motor_speed(Left_Motor, 200);
+		set_motor_speed(Right_Motor, -200);
+		return;
+	}  // switch(d)
+}  // rotate_direction(direction d)
+
+void motors_forward()
+{
+	set_motor_speed(Left_Motor, 200);
+	set_motor_speed(Right_Motor, 200);
+}  // void motors_forward()
+
+void motors_backward()
+{
+	set_motor_speed(Left_Motor, -200);
+	set_motor_speed(Right_Motor, -200);
+}  // void motors_forward()
+

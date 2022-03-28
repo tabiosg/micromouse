@@ -49,8 +49,10 @@ TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
 TIM_HandleTypeDef htim5;
 
-/* USER CODE BEGIN PV */
+UART_HandleTypeDef huart2;
 
+/* USER CODE BEGIN PV */
+uint8_t manual_mode;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -60,6 +62,7 @@ static void MX_TIM3_Init(void);
 static void MX_TIM4_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_TIM5_Init(void);
+static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -102,6 +105,7 @@ int main(void)
   MX_TIM4_Init();
   MX_TIM2_Init();
   MX_TIM5_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
   turn_LEDs_all(Off);  // Turn all colors off
@@ -115,6 +119,11 @@ int main(void)
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);  // Servo Motor PWM
   HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_2);  // Sonic Echo PWM
 
+  manual_mode = 0;  // TODO - change to 1 once we can control manual_mode
+
+  while (manual_mode) {
+	  continue;  // stuck in infinite loop until interrupt is called
+  }
 
   uint8_t determined_algorithm = determine_algorithm();
   do_search_algorithm(determined_algorithm);
@@ -366,6 +375,39 @@ static void MX_TIM5_Init(void)
   /* USER CODE BEGIN TIM5_Init 2 */
 
   /* USER CODE END TIM5_Init 2 */
+
+}
+
+/**
+  * @brief USART2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART2_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART2_Init 0 */
+
+  /* USER CODE END USART2_Init 0 */
+
+  /* USER CODE BEGIN USART2_Init 1 */
+
+  /* USER CODE END USART2_Init 1 */
+  huart2.Instance = USART2;
+  huart2.Init.BaudRate = 9600;
+  huart2.Init.WordLength = UART_WORDLENGTH_8B;
+  huart2.Init.StopBits = UART_STOPBITS_1;
+  huart2.Init.Parity = UART_PARITY_NONE;
+  huart2.Init.Mode = UART_MODE_TX_RX;
+  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART2_Init 2 */
+
+  /* USER CODE END USART2_Init 2 */
 
 }
 

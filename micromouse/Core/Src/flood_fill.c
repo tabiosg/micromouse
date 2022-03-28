@@ -5,9 +5,9 @@ void do_flood_fill_algorithm()
 	// Initialize the maze
 	flood_fill_maze maze;
 
-	for (uint8_t i = 0; i < 16; ++i)
+	for (uint8_t i = 0; i < MAP_SIZE; ++i)
 	{
-		for (uint8_t j = 0; j < 16; ++j)
+		for (uint8_t j = 0; j < MAP_SIZE; ++j)
 		{
 			// Initialize distance grid
 			if(i <= 7 && j <= 7) maze.distance_grid[i][j] = ((7 - i) + (7 - j));
@@ -24,11 +24,11 @@ void do_flood_fill_algorithm()
 
 			if(i == 0) maze.cell_grid[i][j].walls[West] = Wall_Here;
 			if(j == 0) maze.cell_grid[i][j].walls[South] = Wall_Here;
-			if(i == 15) maze.cell_grid[i][j].walls[East] = Wall_Here;
-			if(j == 15) maze.cell_grid[i][j].walls[North] = Wall_Here;
+			if(i == MAP_SIZE - 1) maze.cell_grid[i][j].walls[East] = Wall_Here;
+			if(j == MAP_SIZE - 1) maze.cell_grid[i][j].walls[North] = Wall_Here;
 
-		}  // for (uint8_t j = 0; j < 16; ++j)
-	}  // for (uint8_t i = 0; i < 16; ++i)
+		}  // for (uint8_t j = 0; j < MAP_SIZE; ++j)
+	}  // for (uint8_t i = 0; i < MAP_SIZE; ++i)
 
 	// Do flood fill algorithm
 
@@ -43,6 +43,7 @@ void do_flood_fill_algorithm()
 
 	while(1)
 	{
+		print_maze(&maze, c, direction);
 		switch(direction)
 		{
 		case North:
@@ -73,7 +74,7 @@ void do_flood_fill_algorithm()
 				switch(direction)
 				{
 				case North:
-					if(c.x + 1 < 16) maze.cell_grid[c.x + 1][c.y].walls[West] = Wall_Here;
+					if(c.x + 1 < MAP_SIZE) maze.cell_grid[c.x + 1][c.y].walls[West] = Wall_Here;
 					break;
 				case East:
 					if(c.y - 1 > -1) maze.cell_grid[c.x][c.y - 1].walls[North] = Wall_Here;
@@ -82,7 +83,7 @@ void do_flood_fill_algorithm()
 					if(c.x - 1 > -1) maze.cell_grid[c.x - 1][c.y].walls[East] = Wall_Here;
 					break;
 				case West:
-					if(c.y + 1 < 16) maze.cell_grid[c.x][c.y + 1].walls[South] = Wall_Here;
+					if(c.y + 1 < MAP_SIZE) maze.cell_grid[c.x][c.y + 1].walls[South] = Wall_Here;
 					break;
 				case Unknown:
 					break;
@@ -94,10 +95,10 @@ void do_flood_fill_algorithm()
 				switch(direction)
 				{
 				case North:
-					if(c.y + 1 < 16) maze.cell_grid[c.x][c.y + 1].walls[South] = Wall_Here;
+					if(c.y + 1 < MAP_SIZE) maze.cell_grid[c.x][c.y + 1].walls[South] = Wall_Here;
 					break;
 				case East:
-					if(c.x + 1 < 16) maze.cell_grid[c.x + 1][c.y].walls[West] = Wall_Here;
+					if(c.x + 1 < MAP_SIZE) maze.cell_grid[c.x + 1][c.y].walls[West] = Wall_Here;
 					break;
 				case South:
 					if(c.y - 1 > -1) maze.cell_grid[c.x][c.y - 1].walls[North] = Wall_Here;
@@ -119,10 +120,10 @@ void do_flood_fill_algorithm()
 					if(c.x - 1 > -1) maze.cell_grid[c.x - 1][c.y].walls[East] = Wall_Here;
 					break;
 				case East:
-					if(c.y + 1 < 16) maze.cell_grid[c.x][c.y + 1].walls[South] = Wall_Here;
+					if(c.y + 1 < MAP_SIZE) maze.cell_grid[c.x][c.y + 1].walls[South] = Wall_Here;
 					break;
 				case South:
-					if(c.x + 1 < 16) maze.cell_grid[c.x + 1][c.y].walls[West] = Wall_Here;
+					if(c.x + 1 < MAP_SIZE) maze.cell_grid[c.x + 1][c.y].walls[West] = Wall_Here;
 					break;
 				case West:
 					if(c.y - 1 > -1) maze.cell_grid[c.x][c.y - 1].walls[North] = Wall_Here;
@@ -166,7 +167,7 @@ void do_flood_fill_algorithm()
 		case 0:
 			break;
 		case 1:
-			rotate_direction(Left);
+			rotate_direction_90(Left);
 			// TODO - might need to calibrate
 			break;
 		case 2:
@@ -174,7 +175,7 @@ void do_flood_fill_algorithm()
 			// TODO - might need to calibrate
 			break;
 		case 3:
-			rotate_direction(Right);
+			rotate_direction_90(Right);
 			// TODO - might need to calibrate
 			break;
 		}
@@ -248,7 +249,7 @@ maze_direction minus_one_neighbor(flood_fill_maze *maze, coordinate *c, stack *s
 	 tile.
 	 */
 
-	uint16_t min_dist = 260;
+	uint16_t min_dist = MAP_SIZE * MAP_SIZE + 4;
 
 	// need to find target distance by looking through neighbors
 	int16_t target = maze->distance_grid[c->x][c->y] - 1;
@@ -340,3 +341,48 @@ void init_coordinate(coordinate *c, uint8_t x, uint8_t y)
 	c->x = x;
 	c->y = y;
 }  // void init_coor(Coordinate *c, uint8_t x, uint8_t y)
+
+void print_maze(flood_fill_maze *maze, coordinate c, maze_direction direction)
+{
+	char maze_map[MAP_SIZE][MAP_SIZE];
+
+	for (uint8_t i = 0; i < MAP_SIZE; ++i)
+	{
+		for (uint8_t j = 0; j < MAP_SIZE; ++j)
+		{
+			uint8_t number = maze->cell_grid[i][j].walls[North];
+			number |= maze->cell_grid[i][j].walls[East] << 1;
+			number |= maze->cell_grid[i][j].walls[South] << 2;
+			number |= maze->cell_grid[i][j].walls[West] << 3;
+			maze_map[i][j] = 'a' + number;
+		}  // for (uint8_t j = 0; j < MAP_SIZE; ++j)
+	}  // for (uint8_t i = 0; i < MAP_SIZE; ++i)
+
+	switch(direction)
+	{
+	case North:
+		maze_map[c.x][c.y] = 'N';
+		break;
+	case East:
+		maze_map[c.x][c.y] = 'E';
+		break;
+	case South:
+		maze_map[c.x][c.y] = 'S';
+		break;
+	case West:
+		maze_map[c.x][c.y] = 'W';
+		break;
+	case Unknown:
+		break;
+	}  // switch(i)
+
+	for (uint8_t i = 0; i < MAP_SIZE; ++i)
+	{
+		for (uint8_t j = 0; j < MAP_SIZE; ++j)
+		{
+			char character = maze_map[i][j];
+			printf("%c", character);
+		}  // for (uint8_t j = 0; j < MAP_SIZE; ++j)
+		printf("\r\n");
+	}  // for (uint8_t i = 0; i < MAP_SIZE; ++i)
+}  // void print_maze(flood_fill_maze *m, coordinate c)

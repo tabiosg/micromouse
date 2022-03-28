@@ -6,7 +6,7 @@ void do_hug_left_algorithm()
 	if(!is_there_wall_on_direction(Left))
 	{
 		// If there is an opening on the left, then we head there.
-		rotate_direction(Left);
+		rotate_direction_90(Left);
 		go_forward_one_unit();
 	}
 	else if(is_there_wall_on_direction(Front))
@@ -22,7 +22,7 @@ void do_hug_left_algorithm()
 		else
 		{
 			// There is no wall on right
-			rotate_direction(Right);
+			rotate_direction_90(Right);
 			go_forward_one_unit();
 		}  // if(is_there_wall_on_direction(RIGHT))
 	}

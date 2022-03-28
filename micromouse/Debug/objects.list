@@ -4,6 +4,7 @@
 "./Core/Src/flood_fill.o"
 "./Core/Src/hugger.o"
 "./Core/Src/main.o"
+"./Core/Src/manual_control.o"
 "./Core/Src/motors.o"
 "./Core/Src/mouse.o"
 "./Core/Src/servo.o"
