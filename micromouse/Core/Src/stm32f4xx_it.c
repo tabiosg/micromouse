@@ -213,17 +213,17 @@ void TIM5_IRQHandler(void)
   if (risingEdgeInterrupt == 1)
   {
 	  TIM5->CNT = 0;
-	  TIM5->CCER = (TIM5->CCER & ~(0b1010)) | 0b0010;
+//	  TIM5->CCER = (TIM5->CCER & ~(0b1010)) | 0b0010;
 	  risingEdgeInterrupt = 0;
   }
   else
   {
 	  counter = TIM5->CNT;
-	  TIM5->CCER = (TIM5->CCER & ~(0b1010)) | 0b0000;
+//	  TIM5->CCER = (TIM5->CCER & ~(0b1010)) | 0b0000;
 	  float inches = counter / 144.0;
 	  centimeters = inches * 2.54;
 	  risingEdgeInterrupt = 1;
-	  __HAL_TIM_DISABLE_IT(&htim5, TIM_IT_CC2);
+//	  __HAL_TIM_DISABLE_IT(&htim5, TIM_IT_CC2);
   }
 
   /* USER CODE END TIM5_IRQn 1 */

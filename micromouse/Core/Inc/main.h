@@ -43,6 +43,8 @@ extern "C" {
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
 
+extern UART_HandleTypeDef huart6;
+
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/

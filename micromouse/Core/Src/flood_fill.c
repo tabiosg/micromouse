@@ -378,11 +378,13 @@ void print_maze(flood_fill_maze *maze, coordinate c, maze_direction direction)
 
 	for (uint8_t i = 0; i < MAP_SIZE; ++i)
 	{
+		char buf[16];
 		for (uint8_t j = 0; j < MAP_SIZE; ++j)
 		{
-			char character = maze_map[i][j];
-			printf("%c", character);
+			buf[i] = maze_map[i][j];
 		}  // for (uint8_t j = 0; j < MAP_SIZE; ++j)
-		printf("\r\n");
+		HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
+		char buf2[30] = "\r\n";
+		HAL_UART_Transmit(&huart6, buf2, sizeof(buf2), 1000);
 	}  // for (uint8_t i = 0; i < MAP_SIZE; ++i)
 }  // void print_maze(flood_fill_maze *m, coordinate c)
