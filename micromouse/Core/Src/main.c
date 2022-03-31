@@ -55,6 +55,8 @@ UART_HandleTypeDef huart6;
 
 /* USER CODE BEGIN PV */
 uint8_t manual_mode;
+int bufferSize = 30;
+uint8_t UART6_rxBuffer[bufferSize] = {0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -73,6 +75,39 @@ static void MX_USART2_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+	char command = UART6_rxBuffer[0];
+	switch(command)
+	{
+	case 'l':
+		manual_mode = 1;
+		rotate_direction(Left);
+		break;
+	case 'r':
+		manual_mode = 1;
+		rotate_direction(Right);
+		break;
+	case 'f':
+		manual_mode = 1;
+		motors_forward();
+		break;
+	case 'b':
+		manual_mode = 1;
+		motors_backward();
+		break;
+	case 's':
+		manual_mode = 1;
+		stop_all_motors();
+	case 'a':
+		manual_mode = 0;
+		break;
+	default:
+		break;
+	}  // switch(command)
+    HAL_UART_Receive_IT(&huart6, UART6_rxBuffer, bufferSize);
+}
 
 /* USER CODE END 0 */
 
@@ -127,6 +162,8 @@ int main(void)
   HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_2);  // Sonic Echo PWM
   HAL_TIM_PWM_Start(&htim10, TIM_CHANNEL_1);  // Sonic Trigger PWM
 
+  HAL_UART_Receive_IT(&huart6, UART6_rxBuffer, bufferSize);
+
   manual_mode = 0;  // TODO - change to 1 once we can control manual_mode
 
   while (manual_mode) {
@@ -134,9 +171,6 @@ int main(void)
   }
 
   uint8_t determined_algorithm = determine_algorithm();
-  do_search_algorithm(determined_algorithm);
-  complete_search_algorithm();
-
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -146,6 +180,13 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  do_search_algorithm(determined_algorithm);
+	  complete_search_algorithm();
+	  manual_mode = 1;
+	  while (manual_mode)
+	  {
+		  continue;
+	  }
   }
   /* USER CODE END 3 */
 }

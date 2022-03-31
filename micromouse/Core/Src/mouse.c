@@ -10,7 +10,7 @@ void rotate_direction_90(direction d)
 	case Left:
 		printf("Rotating left. \r\n");
 		rotate_direction(Left);
-		HAL_Delay(445);
+		HAL_Delay(500);
 		stop_all_motors();
 		return;
 	case Front:
@@ -18,7 +18,7 @@ void rotate_direction_90(direction d)
 	case Right:
 		printf("Rotating right. \r\n");
 		rotate_direction(Right);
-		HAL_Delay(445);
+		HAL_Delay(500);
 		stop_all_motors();
 		return;
 	}  // switch(d)

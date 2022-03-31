@@ -53,16 +53,18 @@ uint8_t stack_is_empty(stack *s);
 
 coordinate pop_stack(stack *s);
 
-void push_stack(stack *s, coordinate *c);
+void push_stack(stack *s, coordinate c);
 
-void move_forward_and_update(maze_direction d, coordinate *c, flood_fill_maze *m);
+void move_forward_and_update(maze_direction d, coordinate c, flood_fill_maze *m);
 
-maze_direction minus_one_neighbor(flood_fill_maze *maze, coordinate *c, stack *s);
+maze_direction minus_one_neighbor(flood_fill_maze *maze, coordinate c, stack *s);
 
-uint8_t found_flood_fill_destination(coordinate *c, flood_fill_maze *maze);
+uint8_t found_flood_fill_destination(coordinate c, flood_fill_maze *maze);
 
 void init_coordinate(coordinate *c, uint8_t x, uint8_t y);
 
 void print_maze(flood_fill_maze *maze, coordinate c, maze_direction direction);
+
+void print_distance_grid(flood_fill_maze *maze);
 
 #endif /* INC_FLOOD_FILL_H_ */

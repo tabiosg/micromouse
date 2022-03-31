@@ -17,15 +17,15 @@ void set_motor_speed(motor_side side, int16_t speed400)
 	}  // switch(side)
 }  // set_motor_speed(motor_side side, int16_t speed400)
 
-void stop_motors(motor_side side)
+void stop_motor(motor_side side)
 {
 	set_motor_speed(side, 0);
-}  // stop_motors(motor_side side)
+}  // stop_motor(motor_side side)
 
 void stop_all_motors()
 {
-	set_motor_speed(Left_Motor, 0);
-	set_motor_speed(Right_Motor, 0);
+	stop_motor(Left_Motor);
+	stop_motor(Right_Motor);
 }  // stop_all_motors()
 
 void rotate_direction(direction d)
@@ -34,13 +34,13 @@ void rotate_direction(direction d)
 	switch(d)
 	{
 	case Left:
-		set_motor_speed(Left_Motor, -200);
+		set_motor_speed(Left_Motor, -180);
 		set_motor_speed(Right_Motor, 200);
 		return;
 	case Front:
 		return;
 	case Right:
-		set_motor_speed(Left_Motor, 200);
+		set_motor_speed(Left_Motor, 180);
 		set_motor_speed(Right_Motor, -200);
 		return;
 	}  // switch(d)
@@ -48,13 +48,13 @@ void rotate_direction(direction d)
 
 void motors_forward()
 {
-	set_motor_speed(Left_Motor, 200);
+	set_motor_speed(Left_Motor, 180);
 	set_motor_speed(Right_Motor, 200);
 }  // void motors_forward()
 
 void motors_backward()
 {
-	set_motor_speed(Left_Motor, -200);
+	set_motor_speed(Left_Motor, -180);
 	set_motor_speed(Right_Motor, -200);
 }  // void motors_forward()
 

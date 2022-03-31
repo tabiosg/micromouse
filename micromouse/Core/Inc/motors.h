@@ -12,7 +12,7 @@ typedef enum
 
 void set_motor_speed(motor_side side, int16_t speed400);
 
-void stop_motors(motor_side side);
+void stop_motor(motor_side side);
 
 void stop_all_motors();
 

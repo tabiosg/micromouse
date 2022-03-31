@@ -2,23 +2,15 @@
 
 void test_turn_left()
 {
-	rotate_direction(Left);
+	rotate_direction_90(Left);
 	HAL_Delay(1000);
 }  // void test_turn_left()
 
 void test_alternate_left_right()
 {
-	rotate_direction(Left);
-	HAL_Delay(200);
-	rotate_direction(Left);
+	rotate_direction_90(Left);
 	HAL_Delay(1000);
-	go_forward_one_unit();
-	HAL_Delay(1000);
-	rotate_direction(Right);
-	HAL_Delay(200);
-	rotate_direction(Right);
-	HAL_Delay(1000);
-	go_forward_one_unit();
+	rotate_direction_90(Right);
 	HAL_Delay(1000);
 }  // void test_alternate_left_right()
 
@@ -26,15 +18,15 @@ void test_zig_zag()
 {
 	go_forward_one_unit();
 	HAL_Delay(1000);
-	rotate_direction(Right);
+	rotate_direction_90(Right);
 	HAL_Delay(1000);
 	go_forward_one_unit();
 	HAL_Delay(1000);
-	rotate_direction(Left);
+	rotate_direction_90(Left);
 	HAL_Delay(1000);
 	go_forward_one_unit();
 	HAL_Delay(1000);
-	rotate_direction(Right);
+	rotate_direction_90(Right);
 	HAL_Delay(1000);
 	go_forward_one_unit();
 	HAL_Delay(1000);
@@ -43,15 +35,15 @@ void test_zig_zag()
 
 	go_forward_one_unit();
 	HAL_Delay(1000);
-	rotate_direction(Left);
+	rotate_direction_90(Left);
 	HAL_Delay(1000);
 	go_forward_one_unit();
 	HAL_Delay(1000);
-	rotate_direction(Right);
+	rotate_direction_90(Right);
 	HAL_Delay(1000);
 	go_forward_one_unit();
 	HAL_Delay(1000);
-	rotate_direction(Left);
+	rotate_direction_90(Left);
 	HAL_Delay(1000);
 	go_forward_one_unit();
 	HAL_Delay(1000);
@@ -94,9 +86,10 @@ void do_test_algorithm()
 //	test_alternate_left_right();
 //	test_zig_zag();
 //	test_turn_left();
-	test_wall_sensor();
+//	test_wall_sensor();
 //	test_servo_angles();
 
+	go_forward_one_unit();
 
 	return do_test_algorithm();
 }  // do_test_algorithm()

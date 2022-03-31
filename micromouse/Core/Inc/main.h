@@ -43,6 +43,7 @@ extern "C" {
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
 
+extern uint8_t manual_mode;
 extern UART_HandleTypeDef huart2;
 extern UART_HandleTypeDef huart6;
 
@@ -65,6 +66,8 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define SONIC_ECHO_Pin GPIO_PIN_1
 #define SONIC_ECHO_GPIO_Port GPIOA
+#define UART_PRINT_USB_Pin GPIO_PIN_2
+#define UART_PRINT_USB_GPIO_Port GPIOA
 #define YELLOW_LED_Pin GPIO_PIN_5
 #define YELLOW_LED_GPIO_Port GPIOA
 #define PUSH_BUTTON_Pin GPIO_PIN_6
