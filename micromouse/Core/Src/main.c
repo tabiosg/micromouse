@@ -36,6 +36,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define UART_buffer_size 30
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -55,8 +56,7 @@ UART_HandleTypeDef huart6;
 
 /* USER CODE BEGIN PV */
 uint8_t manual_mode;
-int bufferSize = 30;
-uint8_t UART6_rxBuffer[bufferSize] = {0};
+uint8_t UART6_rxBuffer[UART_buffer_size] = {0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -106,7 +106,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	default:
 		break;
 	}  // switch(command)
-    HAL_UART_Receive_IT(&huart6, UART6_rxBuffer, bufferSize);
+    HAL_UART_Receive_IT(&huart6, UART6_rxBuffer, UART_buffer_size);
 }
 
 /* USER CODE END 0 */
@@ -162,7 +162,7 @@ int main(void)
   HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_2);  // Sonic Echo PWM
   HAL_TIM_PWM_Start(&htim10, TIM_CHANNEL_1);  // Sonic Trigger PWM
 
-  HAL_UART_Receive_IT(&huart6, UART6_rxBuffer, bufferSize);
+  HAL_UART_Receive_IT(&huart6, UART6_rxBuffer, UART_buffer_size);
 
   manual_mode = 0;  // TODO - change to 1 once we can control manual_mode
 

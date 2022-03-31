@@ -18,4 +18,8 @@ void stop_all_motors();
 
 void rotate_direction(direction d);
 
+void motors_forward();
+
+void motors_backward();
+
 #endif /* INC_MOUSE_H_ */
