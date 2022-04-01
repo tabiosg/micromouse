@@ -47,7 +47,7 @@ void do_flood_fill_algorithm()
 
 	while(1)
 	{
-		if (manual_mode)
+		if (requested_manual_command != 'a')
 		{
 			break;
 		}

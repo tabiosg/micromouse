@@ -2,6 +2,7 @@
 #define INC_MOUSE_H_
 
 #include "direction.h"
+#include "stdio.h"
 #include "motors.h"
 #include "main.h"
 

@@ -4,7 +4,7 @@
 #include "motors.h"
 #include "direction.h"
 
-void execute_manual_command(char message[30]);
+void execute_manual_command(char command);
 
 void manual_turn(direction d);
 

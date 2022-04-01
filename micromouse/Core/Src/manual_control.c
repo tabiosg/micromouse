@@ -1,29 +1,29 @@
 #include "manual_control.h"
 
-void execute_manual_command(char message[30])
+void execute_manual_command(char command)
 {
-	if(message[0] != '$') {
-		manual_stop();
-	}  // if(message[0] != '$')
 
-	switch(message[1]) {
+	switch(command)
+	{
 	case 'l':
-		manual_turn(Left);
+		rotate_direction(Left);
 		break;
 	case 'r':
-		manual_turn(Left);
+		rotate_direction(Right);
 		break;
 	case 'f':
-		manual_forward();
+		motors_forward();
 		break;
 	case 'b':
-		manual_backward();
+		motors_backward();
 		break;
 	case 's':
-	default:
-		manual_stop();
+		stop_all_motors();
 		break;
-	}  // switch(message[1])
+	default:
+		break;
+	}  // switch(command)
+	current_manual_command = requested_manual_command;
 
 
 }  // void execute_manual_command(char message[30])

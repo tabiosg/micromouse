@@ -26,6 +26,7 @@
 #include "algorithm.h"
 #include "motors.h"
 #include "servo.h"
+#include "manual_control.h"
 
 /* USER CODE END Includes */
 
@@ -55,8 +56,9 @@ UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart6;
 
 /* USER CODE BEGIN PV */
-uint8_t manual_mode;
 uint8_t UART6_rxBuffer[UART_buffer_size] = {0};
+char current_manual_command = 's';
+char requested_manual_command = 's';
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -78,34 +80,7 @@ static void MX_USART2_UART_Init(void);
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	char command = UART6_rxBuffer[0];
-	switch(command)
-	{
-	case 'l':
-		manual_mode = 1;
-		rotate_direction(Left);
-		break;
-	case 'r':
-		manual_mode = 1;
-		rotate_direction(Right);
-		break;
-	case 'f':
-		manual_mode = 1;
-		motors_forward();
-		break;
-	case 'b':
-		manual_mode = 1;
-		motors_backward();
-		break;
-	case 's':
-		manual_mode = 1;
-		stop_all_motors();
-	case 'a':
-		manual_mode = 0;
-		break;
-	default:
-		break;
-	}  // switch(command)
+	requested_manual_command = UART6_rxBuffer[0];
     HAL_UART_Receive_IT(&huart6, UART6_rxBuffer, UART_buffer_size);
 }
 
@@ -163,14 +138,10 @@ int main(void)
   HAL_TIM_PWM_Start(&htim10, TIM_CHANNEL_1);  // Sonic Trigger PWM
 
   HAL_UART_Receive_IT(&huart6, UART6_rxBuffer, UART_buffer_size);
-
-  manual_mode = 0;  // TODO - change to 1 once we can control manual_mode
-
-  while (manual_mode) {
-	  continue;  // stuck in infinite loop until interrupt is called
-  }
-
   uint8_t determined_algorithm = determine_algorithm();
+
+  requested_manual_command = 'a';  // TODO - change to 's' if manual mode is supported
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -180,14 +151,18 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  while (current_manual_command != 'a')
+	  {
+		  if(requested_manual_command != current_manual_command)
+		  {
+			  execute_manual_command(requested_manual_command);
+		  }  // if(requested_manual_command != current_manual_command)
+	  }  // while (current_manual_command != 'a')
 	  do_search_algorithm(determined_algorithm);
 	  complete_search_algorithm();
-	  manual_mode = 1;
-	  while (manual_mode)
-	  {
-		  continue;
-	  }
-  }
+	  requested_manual_command = 's';
+	  current_manual_command = 's';
+  }  // while (1)
   /* USER CODE END 3 */
 }
 

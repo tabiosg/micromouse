@@ -43,7 +43,8 @@ extern "C" {
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
 
-extern uint8_t manual_mode;
+extern char current_manual_command;
+extern char requested_manual_command;
 extern UART_HandleTypeDef huart2;
 extern UART_HandleTypeDef huart6;
 
