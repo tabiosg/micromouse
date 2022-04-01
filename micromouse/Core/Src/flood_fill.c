@@ -47,7 +47,7 @@ void do_flood_fill_algorithm()
 
 	while(1)
 	{
-		if (requested_manual_command != 'a')
+		if (requested_manual_command != AUTON_CHAR)
 		{
 			break;
 		}
@@ -418,10 +418,10 @@ void print_maze(flood_fill_maze *maze, coordinate c, maze_direction direction)
 
 	for (int8_t i = MAP_SIZE - 1; i >= 0; --i)
 	{
-		char buf[16];
+//		char buf[16];
 		for (uint8_t j = 0; j < MAP_SIZE; ++j)
 		{
-			buf[i] = maze_map[i][j];
+//			buf[i] = maze_map[i][j];
 			printf("%c", maze_map[i][j]);
 		}  // for (uint8_t j = 0; j < MAP_SIZE; ++j)
 //		HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
@@ -439,10 +439,10 @@ void print_distance_grid(flood_fill_maze *maze)
 
 	for (int8_t i = MAP_SIZE - 1; i >= 0; --i)
 	{
-		char buf[16];
+//		char buf[16];
 		for (uint8_t j = 0; j < MAP_SIZE; ++j)
 		{
-			buf[i] = maze->distance_grid[i][j];
+//			buf[i] = maze->distance_grid[i][j];
 			printf("%c", 'a' + maze->distance_grid[i][j]);
 		}  // for (uint8_t j = 0; j < MAP_SIZE; ++j)
 //		HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);

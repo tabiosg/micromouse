@@ -5,19 +5,20 @@ void execute_manual_command(char command)
 
 	switch(command)
 	{
-	case 'l':
+	case LEFT_CHAR:
 		rotate_direction(Left);
 		break;
-	case 'r':
+	case RIGHT_CHAR:
 		rotate_direction(Right);
 		break;
-	case 'f':
+	case FORWARD_CHAR:
 		motors_forward();
 		break;
-	case 'b':
+	case BACKWARD_CHAR:
 		motors_backward();
 		break;
-	case 's':
+	case AUTON_CHAR:
+	case S_CHAR:
 		stop_all_motors();
 		break;
 	default:

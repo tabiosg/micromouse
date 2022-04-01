@@ -37,7 +37,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define UART_buffer_size 30
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -80,8 +79,24 @@ static void MX_USART2_UART_Init(void);
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
+	HAL_NVIC_DisableIRQ(USART6_IRQn);
+	// Save the last command
+
+	// Enable Interrupts
+	HAL_NVIC_EnableIRQ(USART6_IRQn);
+	HAL_StatusTypeDef ret = HAL_UART_Receive_IT(&huart6, UART6_rxBuffer, UART_buffer_size);
+
+	//	__HAL_UART_CLEAR_FLAG(&huart6, UART_CLEAR_OREF);
+	//__HAL_UART_SEND_REQ(JETSON_UART, UART_RXDATA_FLUSH_REQUEST);
+
+	if (ret != HAL_OK) {
+		Error_Handler();
+		HAL_UART_Abort_IT(&huart6);
+		SET_BIT(huart6.Instance->CR3, USART_CR3_EIE);
+		HAL_UART_Receive_IT(&huart6, UART6_rxBuffer, UART_buffer_size);
+	}
+	HAL_NVIC_ClearPendingIRQ(USART6_IRQn);
 	requested_manual_command = UART6_rxBuffer[0];
-    HAL_UART_Receive_IT(&huart6, UART6_rxBuffer, UART_buffer_size);
 }
 
 /* USER CODE END 0 */
@@ -140,7 +155,7 @@ int main(void)
   HAL_UART_Receive_IT(&huart6, UART6_rxBuffer, UART_buffer_size);
   uint8_t determined_algorithm = determine_algorithm();
 
-  requested_manual_command = 'a';  // TODO - change to 's' if manual mode is supported
+  requested_manual_command = S_CHAR;  // TODO - change to 's' if manual mode is supported
 
   /* USER CODE END 2 */
 
@@ -151,17 +166,17 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  while (current_manual_command != 'a')
+	  while (current_manual_command != AUTON_CHAR)
 	  {
 		  if(requested_manual_command != current_manual_command)
 		  {
 			  execute_manual_command(requested_manual_command);
 		  }  // if(requested_manual_command != current_manual_command)
-	  }  // while (current_manual_command != 'a')
+	  }  // while (current_manual_command != AUTON_CHAR)
 	  do_search_algorithm(determined_algorithm);
 	  complete_search_algorithm();
-	  requested_manual_command = 's';
-	  current_manual_command = 's';
+	  requested_manual_command = S_CHAR;
+	  current_manual_command = S_CHAR;
   }  // while (1)
   /* USER CODE END 3 */
 }

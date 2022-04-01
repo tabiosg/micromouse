@@ -4,6 +4,7 @@
 #include <wall_sensor.h>
 #include "stdint.h"
 #include "stdio.h"
+#include "manual_control.h"
 #include "mouse.h"
 
 #define MAP_SIZE 16
