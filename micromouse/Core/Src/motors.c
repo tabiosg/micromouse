@@ -24,6 +24,8 @@ void stop_motor(motor_side side)
 
 void stop_all_motors()
 {
+	char buf[4] = "STOP";
+	HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
 	stop_motor(Left_Motor);
 	stop_motor(Right_Motor);
 }  // stop_all_motors()
@@ -31,15 +33,20 @@ void stop_all_motors()
 void rotate_direction(direction d)
 {
 	// TODO - make sure numbers are precise enough. need to tune
+	char buf[5];
 	switch(d)
 	{
 	case Left:
+		memcpy(buf, "LEFT ", 5);
+		HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
 		set_motor_speed(Left_Motor, -180);
 		set_motor_speed(Right_Motor, 200);
 		return;
 	case Front:
 		return;
 	case Right:
+		memcpy(buf, "RIGHT", 5);
+		HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
 		set_motor_speed(Left_Motor, 180);
 		set_motor_speed(Right_Motor, -200);
 		return;
@@ -48,12 +55,16 @@ void rotate_direction(direction d)
 
 void motors_forward()
 {
+	char buf[7] = "FORWARD";
+	HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
 	set_motor_speed(Left_Motor, 180);
 	set_motor_speed(Right_Motor, 200);
 }  // void motors_forward()
 
 void motors_backward()
 {
+	char buf[8] = "BACKWARD";
+	HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
 	set_motor_speed(Left_Motor, -180);
 	set_motor_speed(Right_Motor, -200);
 }  // void motors_forward()

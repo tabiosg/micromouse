@@ -3,6 +3,7 @@
 
 #include "stdint.h"
 #include "main.h"
+#include "string.h"
 #include "direction.h"
 
 typedef enum
