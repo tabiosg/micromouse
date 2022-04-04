@@ -140,7 +140,7 @@ int main(void)
   HAL_UART_Receive_IT(&huart6, UART6_rxBuffer, UART_buffer_size);
   uint8_t determined_algorithm = determine_algorithm();
 
-  requested_manual_command = 'a';  // TODO - change to 's' if manual mode is supported
+  requested_manual_command = 's';  // TODO - change to 's' if manual mode is supported
 
   /* USER CODE END 2 */
 
