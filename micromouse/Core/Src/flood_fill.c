@@ -29,8 +29,9 @@ void do_flood_fill_algorithm()
 
 		}  // for (uint8_t j = 0; j < MAP_SIZE; ++j)
 	}  // for (uint8_t i = 0; i < MAP_SIZE; ++i)
-	maze.cell_grid[0][0].walls[East] = Wall_Here;
-	maze.cell_grid[0][1].walls[West] = Wall_Here;
+
+//	maze.cell_grid[0][0].walls[East] = Wall_Here;
+//	maze.cell_grid[0][1].walls[West] = Wall_Here;
 
 	// Do flood fill algorithm
 
@@ -49,7 +50,7 @@ void do_flood_fill_algorithm()
 	{
 		if (requested_manual_command != AUTON_CHAR)
 		{
-			break;
+			return;
 		}
 		switch(direction)
 		{
@@ -78,7 +79,7 @@ void do_flood_fill_algorithm()
 			go_forward_one_unit();
 
 			char buf[20];
-			sprintf((char *)buf, "@%u,%u", c.x, c.y);
+			sprintf((char *)buf, "@%i,%i,%i,,,,,,,,,,,,,", c.x, c.y, direction);
 			HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
 			print_maze(&maze, c, direction);
 
@@ -176,6 +177,10 @@ void do_flood_fill_algorithm()
 		{
 			while(!stack_is_empty(&stack))
 			{
+				if (requested_manual_command != AUTON_CHAR)
+				{
+					return;
+				}
 				// get the cell to test from the stack
 				next_coordinate = pop_stack(&stack);
 				// find a neighbor cell with distance one less than current
