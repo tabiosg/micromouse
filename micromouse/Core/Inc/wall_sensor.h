@@ -4,6 +4,7 @@
 #include "stdint.h"
 #include "direction.h"
 #include "servo.h"
+#include "string.h"
 #include "ultrasonic.h"
 
 uint8_t is_there_wall_on_direction(direction d);

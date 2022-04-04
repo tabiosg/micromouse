@@ -24,7 +24,8 @@ void stop_motor(motor_side side)
 
 void stop_all_motors()
 {
-	char buf[4] = "STOP";
+	char buf[20];
+	memcpy(buf, "$STOP", 15);
 	HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
 	stop_motor(Left_Motor);
 	stop_motor(Right_Motor);
@@ -33,11 +34,11 @@ void stop_all_motors()
 void rotate_direction(direction d)
 {
 	// TODO - make sure numbers are precise enough. need to tune
-	char buf[5];
+	char buf[20];
 	switch(d)
 	{
 	case Left:
-		memcpy(buf, "LEFT ", 5);
+		memcpy(buf, "$LEFT", 15);
 		HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
 		set_motor_speed(Left_Motor, -180);
 		set_motor_speed(Right_Motor, 200);
@@ -45,7 +46,7 @@ void rotate_direction(direction d)
 	case Front:
 		return;
 	case Right:
-		memcpy(buf, "RIGHT", 5);
+		memcpy(buf, "$RIGHT", 15);
 		HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
 		set_motor_speed(Left_Motor, 180);
 		set_motor_speed(Right_Motor, -200);
@@ -55,7 +56,8 @@ void rotate_direction(direction d)
 
 void motors_forward()
 {
-	char buf[7] = "FORWARD";
+	char buf[20];
+	memcpy(buf, "$FORWARD", 15);
 	HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
 	set_motor_speed(Left_Motor, 180);
 	set_motor_speed(Right_Motor, 200);
@@ -63,7 +65,8 @@ void motors_forward()
 
 void motors_backward()
 {
-	char buf[8] = "BACKWARD";
+	char buf[20];
+	memcpy(buf, "$BACKWARD", 15);
 	HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
 	set_motor_speed(Left_Motor, -180);
 	set_motor_speed(Right_Motor, -200);

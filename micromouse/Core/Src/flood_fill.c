@@ -39,7 +39,7 @@ void do_flood_fill_algorithm()
 	coordinate next_coordinate;
 	init_coordinate(&next_coordinate, 0, 0);  // Always start in South, West corner facing North.
 
-	coordinate c = next_coordinate;  // c is the coordinate that we want to be in
+	coordinate c = next_coordinate;  // c is the coordinate that we are currently in
 
 	stack stack;
 
@@ -77,14 +77,13 @@ void do_flood_fill_algorithm()
 			printf("Going forward one unit into an unvisited cell. \r\n");
 			go_forward_one_unit();
 
+			char buf[20];
+			sprintf((char *)buf, "@%u,%u", c.x, c.y);
+			HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
 			print_maze(&maze, c, direction);
 
-			printf("Checking if there is wall on left direction. \r\n");
 			if(is_there_wall_on_direction(Left))
 			{
-				char buf[10] = "WALL LEFT.";
-				HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
-				printf("There is wall on left direction. \r\n");
 				maze.cell_grid[c.y][c.x].walls[(direction - 1) % 4] = Wall_Here;
 				switch(direction)
 				{
@@ -105,12 +104,8 @@ void do_flood_fill_algorithm()
 				}  // switch(direction)
 			}  // if(is_there_wall_on_direction(Left))
 
-			printf("Checking if there is wall in front. \r\n");
 			if(is_there_wall_on_direction(Front))
 			{
-				char buf[11] = "WALL FRONT.";
-				HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
-				printf("There is wall in front. \r\n");
 				maze.cell_grid[c.y][c.x].walls[direction] = Wall_Here;
 				switch(direction)
 				{
@@ -131,12 +126,8 @@ void do_flood_fill_algorithm()
 				}  // switch(direction)
 
 			}  // if(is_there_wall_on_direction(Front))
-			printf("Checking if there is wall on right direction. \r\n");
 			if(is_there_wall_on_direction(Right))
 			{
-				char buf[11] = "WALL RIGHT.";
-				HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
-				printf("There is wall on right. \r\n");
 				maze.cell_grid[c.y][c.x].walls[(direction + 1) % 4] = Wall_Here;
 				switch(direction)
 				{
@@ -418,15 +409,10 @@ void print_maze(flood_fill_maze *maze, coordinate c, maze_direction direction)
 
 	for (int8_t i = MAP_SIZE - 1; i >= 0; --i)
 	{
-//		char buf[16];
 		for (uint8_t j = 0; j < MAP_SIZE; ++j)
 		{
-//			buf[i] = maze_map[i][j];
 			printf("%c", maze_map[i][j]);
 		}  // for (uint8_t j = 0; j < MAP_SIZE; ++j)
-//		HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
-//		char buf2[30] = "\r\n";
-//		HAL_UART_Transmit(&huart6, buf2, sizeof(buf2), 1000);
 
 		printf("\r\n");
 	}  // for (int8_t i = MAP_SIZE - 1; i >= 0; --i)
@@ -439,16 +425,10 @@ void print_distance_grid(flood_fill_maze *maze)
 
 	for (int8_t i = MAP_SIZE - 1; i >= 0; --i)
 	{
-//		char buf[16];
 		for (uint8_t j = 0; j < MAP_SIZE; ++j)
 		{
-//			buf[i] = maze->distance_grid[i][j];
 			printf("%c", 'a' + maze->distance_grid[i][j]);
 		}  // for (uint8_t j = 0; j < MAP_SIZE; ++j)
-//		HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
-//		char buf2[30] = "\r\n";
-//		HAL_UART_Transmit(&huart6, buf2, sizeof(buf2), 1000);
-
 		printf("\r\n");
 	}  // for (int8_t i = MAP_SIZE - 1; i >= 0; --i)
 }  // void print_distance_grid(flood_fill_maze *maze)
