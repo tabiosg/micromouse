@@ -275,7 +275,7 @@ uint8_t found_flood_fill_destination(coordinate c, flood_fill_maze *maze)
 
 maze_direction minus_one_neighbor(flood_fill_maze *maze, coordinate c, stack *s)
 {
-	print_distance_grid(maze);
+//	print_distance_grid(maze);
 
 	/*
 	 This functions returns the direction that leads to what it thinks will be
