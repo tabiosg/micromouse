@@ -4,7 +4,8 @@ uint8_t is_there_wall_on_direction(direction d)
 {
 	set_servo_angle(d);
 	HAL_Delay(1000);
-	uint8_t wall_detected = distance_of_object_in_cm() < 18;
+	int16_t distance_cm = distance_of_object_in_cm();
+	uint8_t wall_detected = distance_cm < 25;
 	char buf[20];
 	switch(d)
 	{

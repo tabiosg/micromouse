@@ -82,14 +82,22 @@ void test_servo_angles()
 
 void do_test_algorithm()
 {
+	if (requested_manual_command != AUTON_CHAR)
+	{
+		return;
+	}
+
 
 //	test_alternate_left_right();
 //	test_zig_zag();
-//	test_turn_left();
+	test_turn_left();
 //	test_wall_sensor();
 //	test_servo_angles();
 
-	go_forward_one_unit();
+//	go_forward_one_unit();
+//	HAL_Delay(2000);
+
+//	distance_of_object_in_cm();
 
 	return do_test_algorithm();
 }  // do_test_algorithm()

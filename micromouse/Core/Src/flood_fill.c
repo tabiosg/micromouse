@@ -51,7 +51,7 @@ void do_flood_fill_algorithm()
 		if (requested_manual_command != AUTON_CHAR)
 		{
 			return;
-		}
+		}  // if (requested_manual_command != AUTON_CHAR)
 		switch(direction)
 		{
 		case North:
@@ -179,7 +179,7 @@ void do_flood_fill_algorithm()
 				if (requested_manual_command != AUTON_CHAR)
 				{
 					return;
-				}
+				}  // if (requested_manual_command != AUTON_CHAR)
 				// get the cell to test from the stack
 				next_coordinate = pop_stack(&stack);
 				// find a neighbor cell with distance one less than current
@@ -189,21 +189,25 @@ void do_flood_fill_algorithm()
 			desired_direction = minus_one_neighbor(&maze, c, &stack);
 		}  // if(next_direction == Unknown)
 
-		int difference = direction - desired_direction;
+		int difference = desired_direction - direction;
+		char buf2[20];
+		sprintf((char *)buf2, "^%i,%i,%i,,,,,,,,,,,,,", direction, desired_direction, difference % 4);
+		HAL_UART_Transmit(&huart6, buf2, sizeof(buf2), 1000);
 		switch(difference % 4)
 		{
 		case 0:
 			break;
 		case 1:
-			rotate_direction_90(Left);
+			rotate_direction_90(Right);
 			break;
 		case 2:
 			rotate_180_degrees();
 			break;
 		case 3:
-			rotate_direction_90(Right);
+			rotate_direction_90(Left);
 			break;
 		}
+
 
 		direction = desired_direction;
 
