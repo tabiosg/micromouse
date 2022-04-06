@@ -72,15 +72,16 @@ void do_flood_fill_algorithm()
 
 		// visiting_coord should now be the coordinate that we're on.
 
+		printf("Currently at x=%i, y=%i facing direction=%i.\r\n", c.x, c.y, direction);
+		char buf[20];
+		sprintf((char *)buf, "@%i,%i,%i,,,,,,,,,,,,,", c.x, c.y, direction);
+		HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
+
 		if(!maze.cell_grid[c.y][c.x].visited)
 		{
 			// Move in direction for unvisited cell
-			printf("Going forward one unit into an unvisited cell. \r\n");
 			go_forward_one_unit();
 
-			char buf[20];
-			sprintf((char *)buf, "@%i,%i,%i,,,,,,,,,,,,,", c.x, c.y, direction);
-			HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
 			print_maze(&maze, c, direction);
 
 			if(is_there_wall_on_direction(Left))
@@ -157,7 +158,6 @@ void do_flood_fill_algorithm()
 		else
 		{
 			// Move in direction for visited cell
-			printf("Going forward one unit into an already visited cell. Checking for walls. \r\n");
 			go_forward_one_unit();
 
 			print_maze(&maze, c, direction);
@@ -165,7 +165,6 @@ void do_flood_fill_algorithm()
 
 		if(found_flood_fill_destination(c, &maze))
 		{
-			printf("Successfully found the center of the maze! \r\n");
 			return;
 		}  // if(found_flood_fill_destination(&c, &maze))
 
@@ -194,22 +193,15 @@ void do_flood_fill_algorithm()
 		switch(difference % 4)
 		{
 		case 0:
-			printf("Will stay facing forward. \r\n");
 			break;
 		case 1:
-			printf("Turning left. \r\n");
 			rotate_direction_90(Left);
-			// TODO - might need to calibrate
 			break;
 		case 2:
-			printf("Turning 180 degrees. \r\n");
 			rotate_180_degrees();
-			// TODO - might need to calibrate
 			break;
 		case 3:
-			printf("Turning right. \r\n");
 			rotate_direction_90(Right);
-			// TODO - might need to calibrate
 			break;
 		}
 

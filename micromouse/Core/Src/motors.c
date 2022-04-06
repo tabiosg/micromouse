@@ -24,6 +24,7 @@ void stop_motor(motor_side side)
 
 void stop_all_motors()
 {
+	printf("Currently stopping the motors.\r\n");
 	char buf[20];
 	memcpy(buf, "$STOP,,,,,,,,,,,,,,", 20);
 	HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
@@ -38,6 +39,7 @@ void rotate_direction(direction d)
 	switch(d)
 	{
 	case Left:
+		printf("Currently rotating left.\r\n");
 		memcpy(buf, "$LEFT,,,,,,,,,,,,,,", 20);
 		HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
 		set_motor_speed(Left_Motor, -180);
@@ -46,6 +48,7 @@ void rotate_direction(direction d)
 	case Front:
 		return;
 	case Right:
+		printf("Currently rotating right.\r\n");
 		memcpy(buf, "$RIGHT,,,,,,,,,,,,,", 20);
 		HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
 		set_motor_speed(Left_Motor, 180);
@@ -56,6 +59,7 @@ void rotate_direction(direction d)
 
 void motors_forward()
 {
+	printf("Moving the motors forward.\r\n");
 	char buf[20];
 	memcpy(buf, "$FORWARD,,,,,,,,,,,", 20);
 	HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
@@ -65,6 +69,7 @@ void motors_forward()
 
 void motors_backward()
 {
+	printf("Moving the motors backward.\r\n");
 	char buf[20];
 	memcpy(buf, "$BACKWARD,,,,,,,,,,", 20);
 	HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);

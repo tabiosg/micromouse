@@ -9,12 +9,15 @@ uint8_t is_there_wall_on_direction(direction d)
 	switch(d)
 	{
 	case Left:
+		printf(wall_detected ? "There is a wall on the left.\r\n" : "There is no wall on the left.\r\n");
 		memcpy(buf, wall_detected ? "\%LEFT,0,,,,,,,,,,,," : "\%LEFT,0,,,,,,,,,,,,", 20);
 		break;
 	case Front:
+		printf(wall_detected ? "There is a wall in front.\r\n" : "There is no wall in front.\r\n");
 		memcpy(buf, wall_detected ? "%FRONT,1,,,,,,,,,,," : "%FRONT,0,,,,,,,,,,,", 20);
 		break;
 	case Right:
+		printf(wall_detected ? "There is a wall on the right.\r\n" : "There is no wall on the right.\r\n");
 		memcpy(buf, wall_detected ? "%RIGHT,1,,,,,,,,,,," : "%RIGHT,0,,,,,,,,,,,", 20);
 		break;
 	}  // switch(d)

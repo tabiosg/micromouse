@@ -6,8 +6,6 @@ float centimeters;
 
 int16_t distance_of_object_in_cm()
 {
-	char string[40];
-	sprintf((char *)string, "%f", centimeters * 1000);
-	printf("%f\r\n", centimeters);
+	printf("Distance is %f cm\r\n", centimeters);
 	return centimeters;
 }  // int16_t distance_of_object_in_cm()
