@@ -9,6 +9,7 @@
 #define FORWARD_CHAR '2'
 #define BACKWARD_CHAR '5'
 #define S_CHAR '8'
+#define COMPLETED_CHAR '-'
 #define AUTON_CHAR 'A'
 
 void execute_manual_command(char command);

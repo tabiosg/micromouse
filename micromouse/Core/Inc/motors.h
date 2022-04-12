@@ -17,10 +17,10 @@ void stop_motor(motor_side side);
 
 void stop_all_motors();
 
-void rotate_direction(direction d);
+void rotate_direction(direction d, float speed_1);
 
-void motors_forward();
+void motors_forward(float speed_1);
 
-void motors_backward();
+void motors_backward(float speed_1);
 
 #endif /* INC_MOUSE_H_ */

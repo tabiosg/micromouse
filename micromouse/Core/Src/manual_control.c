@@ -6,20 +6,20 @@ void execute_manual_command(char command)
 	switch(command)
 	{
 	case LEFT_CHAR:
-		rotate_direction(Left);
+		rotate_direction(Left, 0.6);
 		break;
 	case RIGHT_CHAR:
-		rotate_direction(Right);
+		rotate_direction(Right, 0.6);
 		break;
 	case FORWARD_CHAR:
-		motors_forward();
+		manual_forward();
 		break;
 	case BACKWARD_CHAR:
-		motors_backward();
+		manual_backward();
 		break;
 	case AUTON_CHAR:
 	case S_CHAR:
-		stop_all_motors();
+		manual_stop();
 		break;
 	default:
 		break;
@@ -31,17 +31,17 @@ void execute_manual_command(char command)
 
 void manual_turn(direction d)
 {
-	rotate_direction(d);
+	rotate_direction(d, 1);
 }  // void manual_turn(direction d)
 
 void manual_forward()
 {
-	motors_forward();
+	motors_forward(0.5);
 }  // void manual_forward()
 
 void manual_backward()
 {
-	motors_backward();
+	motors_backward(0.5);
 }  // void manual_backward()
 
 void manual_stop()

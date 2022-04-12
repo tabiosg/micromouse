@@ -32,7 +32,7 @@ void stop_all_motors()
 	stop_motor(Right_Motor);
 }  // stop_all_motors()
 
-void rotate_direction(direction d)
+void rotate_direction(direction d, float speed_1)
 {
 	// TODO - make sure numbers are precise enough. need to tune
 	char buf[20];
@@ -42,8 +42,8 @@ void rotate_direction(direction d)
 		printf("Currently rotating left.\r\n");
 		memcpy(buf, "$LEFT,,,,,,,,,,,,,,", 20);
 		HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
-		set_motor_speed(Left_Motor, -181);
-		set_motor_speed(Right_Motor, 200);
+		set_motor_speed(Left_Motor, -181.0 * speed_1);
+		set_motor_speed(Right_Motor, 200.0 * speed_1);
 		return;
 	case Front:
 		return;
@@ -51,29 +51,29 @@ void rotate_direction(direction d)
 		printf("Currently rotating right.\r\n");
 		memcpy(buf, "$RIGHT,,,,,,,,,,,,,", 20);
 		HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
-		set_motor_speed(Left_Motor, 181);
-		set_motor_speed(Right_Motor, -200);
+		set_motor_speed(Left_Motor, 181.0 * speed_1);
+		set_motor_speed(Right_Motor, -200.0 * speed_1);
 		return;
 	}  // switch(d)
-}  // rotate_direction(direction d)
+}  // rotate_direction(direction d, float speed_1)
 
-void motors_forward()
+void motors_forward(float speed_1)
 {
 	printf("Moving the motors forward.\r\n");
 	char buf[20];
 	memcpy(buf, "$FORWARD,,,,,,,,,,,", 20);
 	HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
-	set_motor_speed(Left_Motor, -181);
-	set_motor_speed(Right_Motor, -200);
-}  // void motors_forward()
+	set_motor_speed(Left_Motor, -181.0 * speed_1);
+	set_motor_speed(Right_Motor, -200.0 * speed_1);
+}  // void motors_forward(float speed_1)
 
-void motors_backward()
+void motors_backward(float speed_1)
 {
 	printf("Moving the motors backward.\r\n");
 	char buf[20];
 	memcpy(buf, "$BACKWARD,,,,,,,,,,", 20);
 	HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
-	set_motor_speed(Left_Motor, 181);
-	set_motor_speed(Right_Motor, 200);
-}  // void motors_forward()
+	set_motor_speed(Left_Motor, 181.0 * speed_1);
+	set_motor_speed(Right_Motor, 200.0 * speed_1);
+}  // void motors_backward(float speed_1)
 

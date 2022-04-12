@@ -8,14 +8,14 @@ void rotate_direction_90(direction d)
 	switch(d)
 	{
 	case Left:
-		rotate_direction(Left);
+		rotate_direction(Left, 1);
 		HAL_Delay(333);
 		stop_all_motors();
 		return;
 	case Front:
 		return;
 	case Right:
-		rotate_direction(Right);
+		rotate_direction(Right, 1);
 		HAL_Delay(342);
 		stop_all_motors();
 		return;
@@ -36,14 +36,14 @@ void rotate_360_degrees(direction d)
 	switch(d)
 	{
 	case Left:
-		rotate_direction(Left);
+		rotate_direction(Left, 1);
 		HAL_Delay(1475);
 		stop_all_motors();
 		return;
 	case Front:
 		return;
 	case Right:
-		rotate_direction(Right);
+		rotate_direction(Right, 1);
 		HAL_Delay(1700);
 		stop_all_motors();
 		return;
@@ -53,7 +53,7 @@ void rotate_360_degrees(direction d)
 
 void go_forward_one_unit()
 {
-	motors_forward();
+	motors_forward(1);
 	HAL_Delay(629);
 	stop_all_motors();
 }  // go_forward()
