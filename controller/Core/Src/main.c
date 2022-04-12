@@ -119,6 +119,10 @@ int main(void)
   uint8_t left[] = {'L', 'E', 'F', 'T', ' ', ' ', ' ', ' '};
   uint8_t right[] = {'R', 'I', 'G', 'H', 'T', ' ', ' ', ' '};
   uint8_t stopped[] = {'S', 'T', 'O', 'P', 'P', 'E', 'D', ' '};
+
+  uint8_t manual[] = {'M', 'A', 'N', 'U', 'A', 'L', ' ', ' ', ' ', ' '};
+  uint8_t autonomous[] = {'A', 'U', 'T', 'O', 'N', 'O', 'M', 'O', 'U', 'S'};
+
   while (1)
   {
     /* USER CODE END WHILE */
@@ -150,12 +154,25 @@ int main(void)
 	   		  }
 	  		  break;
 
-	  	  case '%':
+	  	  case '&':
+	  		  	 lcdSetCursor(0,7);
+	  		  	 char mode = received_data[1];
 
+	  		  	 if(mode == 'M'){
+	  		  		 lcdWrite(&manual, sizeof(manual));
+	  		  	 }
+	  		  	 else if(mode == 'A'){
+	  		  		 lcdWrite(&autonomous, sizeof(autonomous));
+	  		  	 }
 	  		  break;
 
 	  	  case '@':
-
+	  		  lcdSetCursor(2, 10);
+	  		  uint8_t x = received_data[1];
+	  		  uint8_t y = received_data[3];
+	  		  char facing = received_data[5];
+	  		  char location[] = {'(', x, ',', y, ')', ' ', facing};
+	  		  lcdWrite(&location, sizeof(location));
 	  		  break;
 
 	  	  default:
