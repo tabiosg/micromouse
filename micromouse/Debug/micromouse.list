@@ -7338,9 +7338,9 @@ uint8_t is_there_wall_on_direction(direction d)
  800381a:	f7ff ffd7 	bl	80037cc <distance_of_object_in_cm>
  800381e:	4603      	mov	r3, r0
  8003820:	83fb      	strh	r3, [r7, #30]
-	uint8_t wall_detected = distance_cm < 25;
+	uint8_t wall_detected = distance_cm < 16;
  8003822:	f9b7 301e 	ldrsh.w	r3, [r7, #30]
- 8003826:	2b18      	cmp	r3, #24
+ 8003826:	2b0f      	cmp	r3, #15
  8003828:	bfd4      	ite	le
  800382a:	2301      	movle	r3, #1
  800382c:	2300      	movgt	r3, #0
