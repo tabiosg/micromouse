@@ -167,7 +167,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
     set_servo_angle(Front);
-    if (current_manual_command != COMPLETED_CHAR && current_manual_command != S_CHAR)
+    if (current_manual_command != COMPLETED_CHAR)
     {
 		printf("Currently changing to manual mode.\r\n");
 		char buf[20];
@@ -177,10 +177,10 @@ int main(void)
 
 	  while (current_manual_command != AUTON_CHAR)
 	  {
-			printf("Currently changing to manual mode.\r\n");
-			char buf[20];
-			memcpy(buf, "&MANUAL,,,,,,,,,,,,", 20);
-			HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
+//			printf("Currently changing to manual mode.\r\n");
+//			char buf[20];
+//			memcpy(buf, "&MANUAL,,,,,,,,,,,,", 20);
+//			HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
 		  if(requested_manual_command != current_manual_command)
 		  {
 			  execute_manual_command(requested_manual_command);
@@ -193,10 +193,18 @@ int main(void)
     memcpy(buf, "&AUTONOMOUS,,,,,,,,", 20);
     HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
 
-	  do_search_algorithm(determined_algorithm);
-	  complete_search_algorithm();
-	  requested_manual_command = COMPLETED_CHAR;
-	  current_manual_command = COMPLETED_CHAR;
+	  uint8_t completed = do_search_algorithm(determined_algorithm);
+	  
+    if (completed)
+    {
+      complete_search_algorithm();
+      requested_manual_command = COMPLETED_CHAR;
+      current_manual_command = COMPLETED_CHAR;
+    }  // if (completed)
+    else
+    {
+	  current_manual_command = S_CHAR;
+    }
   }  // while (1)
   /* USER CODE END 3 */
 }

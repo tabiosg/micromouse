@@ -20,7 +20,7 @@ uint8_t determine_algorithm()
 	return -1;
 }  // determine_algorithm()
 
-void do_search_algorithm(algorithm_type algo)
+uint8_t do_search_algorithm(algorithm_type algo)
 {
 	//  Turn Blue LED on to indicate searching for a path.
 	turn_LEDs_all(Off);
@@ -31,14 +31,14 @@ void do_search_algorithm(algorithm_type algo)
 	{
 	case Hug_Left_Algo:
 		do_hug_left_algorithm();
-		return;
+		return 0;
 	case Flood_Fill_Algo:
-		do_flood_fill_algorithm();
-		return; // TODO
+		return do_flood_fill_algorithm();
 	case Test_Algo:
 		do_test_algorithm();
+		return 0;
 	}  // switch(algo)
-}  // do_search_algorithm(algorithm_type algo)
+}  // uint8_t do_search_algorithm(algorithm_type algo)
 
 void complete_search_algorithm()
 {

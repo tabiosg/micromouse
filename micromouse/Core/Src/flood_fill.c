@@ -1,6 +1,6 @@
 #include "flood_fill.h"
 
-void do_flood_fill_algorithm()
+uint8_t do_flood_fill_algorithm()
 {
 	// Initialize the maze
 	flood_fill_maze maze;
@@ -50,7 +50,7 @@ void do_flood_fill_algorithm()
 	{
 		if (requested_manual_command != AUTON_CHAR)
 		{
-			return;
+			return 0;
 		}  // if (requested_manual_command != AUTON_CHAR)
 		switch(direction)
 		{
@@ -108,7 +108,7 @@ void do_flood_fill_algorithm()
 
 			if (requested_manual_command != AUTON_CHAR)
 			{
-				return;
+				return 0;
 			}  // if (requested_manual_command != AUTON_CHAR)
 
 			if(is_there_wall_on_direction(Front))
@@ -136,7 +136,7 @@ void do_flood_fill_algorithm()
 
 			if (requested_manual_command != AUTON_CHAR)
 			{
-				return;
+				return 0;
 			}  // if (requested_manual_command != AUTON_CHAR)
 
 			if(is_there_wall_on_direction(Right))
@@ -164,7 +164,7 @@ void do_flood_fill_algorithm()
 
 			if (requested_manual_command != AUTON_CHAR)
 			{
-				return;
+				return 0;
 			}  // if (requested_manual_command != AUTON_CHAR)
 
 			maze.cell_grid[c.y][c.x].visited = 1;
@@ -185,7 +185,7 @@ void do_flood_fill_algorithm()
 			char buf[20];
 			memcpy(buf, "&COMPLETED,,,,,,,,,", 20);
 			HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
-			return;
+			return 1;
 		}  // if(found_flood_fill_destination(&c, &maze))
 
 
@@ -198,7 +198,7 @@ void do_flood_fill_algorithm()
 			{
 				if (requested_manual_command != AUTON_CHAR)
 				{
-					return;
+					return 0;
 				}  // if (requested_manual_command != AUTON_CHAR)
 				// get the cell to test from the stack
 				next_coordinate = pop_stack(&stack);

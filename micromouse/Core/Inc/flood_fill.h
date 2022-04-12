@@ -48,7 +48,7 @@ typedef struct
 	uint8_t index;
 } stack;
 
-void do_flood_fill_algorithm();
+uint8_t do_flood_fill_algorithm();
 
 uint8_t stack_is_empty(stack *s);
 
