@@ -166,6 +166,12 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    set_servo_angle(Front);
+    printf("Currently changing to manual mode.\r\n");
+    char buf[20];
+    memcpy(buf, "&MANUAL,,,,,,,,,,,,", 20);
+    HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
+
 	  while (current_manual_command != AUTON_CHAR)
 	  {
 		  if(requested_manual_command != current_manual_command)
@@ -173,6 +179,12 @@ int main(void)
 			  execute_manual_command(requested_manual_command);
 		  }  // if(requested_manual_command != current_manual_command)
 	  }  // while (current_manual_command != AUTON_CHAR)
+
+    set_servo_angle(Front);
+    printf("Changing to autonomous mode.\r\n");
+    memcpy(buf, "&AUTONOMOUS,,,,,,,,", 20);
+    HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
+
 	  do_search_algorithm(determined_algorithm);
 	  complete_search_algorithm();
 	  requested_manual_command = S_CHAR;
