@@ -122,6 +122,9 @@ int main(void)
 
   uint8_t manual[] = {'M', 'A', 'N', 'U', 'A', 'L', ' ', ' ', ' ', ' '};
   uint8_t autonomous[] = {'A', 'U', 'T', 'O', 'N', 'O', 'M', 'O', 'U', 'S'};
+  uint8_t completed[] = {'C', 'O', 'M', 'P', 'L', 'E', 'T', 'E', 'D', ' '};
+
+  uint8_t blankline[] = {' ', ' ', ' ', ' ', ' ', ' ', ' '};
 
   while (1)
   {
@@ -133,6 +136,8 @@ int main(void)
 	  char tag = received_data[0];
 
 	  switch(tag){
+
+	  	  // Handle Direction line
 	  	  case '$':
 	  		  lcdSetCursor(1, 11);
 	  		  char direction = received_data[1];
@@ -154,24 +159,33 @@ int main(void)
 	   		  }
 	  		  break;
 
+	  	  // Handle Mode line
 	  	  case '&':
 	  		  	 lcdSetCursor(0,7);
 	  		  	 char mode = received_data[1];
 
 	  		  	 if(mode == 'M'){
 	  		  		 lcdWrite(&manual, sizeof(manual));
+	  		  		 // Clear location
+	  		  		 lcdSetCursor(2, 10);
+	  		  		 lcdWrite(&blankline, sizeof(blankline));
 	  		  	 }
 	  		  	 else if(mode == 'A'){
 	  		  		 lcdWrite(&autonomous, sizeof(autonomous));
 	  		  	 }
+	  		  	 else if(mode == 'C'){
+	  		  		 lcdWrite(&completed, sizeof(completed));
+	  		  	 }
 	  		  break;
 
+	  	  // Handle Location line
 	  	  case '@':
 	  		  lcdSetCursor(2, 10);
 	  		  uint8_t x = received_data[1];
 	  		  uint8_t y = received_data[3];
-	  		  char facing = received_data[5];
-	  		  char location[] = {'(', x, ',', y, ')', ' ', facing};
+	  		  uint8_t facing = received_data[5];
+	  		  char dir[4] = {'N', 'E', 'S', 'W'};
+	  		  char location[] = {'(', x, ',', y, ')', ' ', dir[facing]};
 	  		  lcdWrite(&location, sizeof(location));
 	  		  break;
 
@@ -180,7 +194,7 @@ int main(void)
 
 	  }
 
-//	  HAL_Delay(500);
+	  HAL_Delay(20);
 
 
   }
