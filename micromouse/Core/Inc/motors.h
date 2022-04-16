@@ -6,6 +6,9 @@
 #include "string.h"
 #include "direction.h"
 
+#define LEFT_MOTOR_MULT 172.0
+#define RIGHT_MOTOR_MULT 200.0
+
 typedef enum
 {
 	Left_Motor, Right_Motor

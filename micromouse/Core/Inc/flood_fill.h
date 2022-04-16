@@ -56,8 +56,6 @@ coordinate pop_stack(stack *s);
 
 void push_stack(stack *s, coordinate c);
 
-void move_forward_and_update(maze_direction d, coordinate c, flood_fill_maze *m);
-
 maze_direction minus_one_neighbor(flood_fill_maze *maze, coordinate c, stack *s);
 
 uint8_t found_flood_fill_destination(coordinate c, flood_fill_maze *maze);

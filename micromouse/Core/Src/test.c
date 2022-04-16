@@ -2,7 +2,7 @@
 
 void test_turn_left()
 {
-	rotate_direction_90(Left);
+	rotate_direction_90(Right);
 	HAL_Delay(1000);
 }  // void test_turn_left()
 

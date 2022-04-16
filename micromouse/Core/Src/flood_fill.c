@@ -5,6 +5,7 @@ uint8_t do_flood_fill_algorithm()
 	// Initialize the maze
 	flood_fill_maze maze;
 
+	/*
 	for (uint8_t i = 0; i < MAP_SIZE; ++i)
 	{
 		for (uint8_t j = 0; j < MAP_SIZE; ++j)
@@ -29,9 +30,46 @@ uint8_t do_flood_fill_algorithm()
 
 		}  // for (uint8_t j = 0; j < MAP_SIZE; ++j)
 	}  // for (uint8_t i = 0; i < MAP_SIZE; ++i)
+	*/
 
-//	maze.cell_grid[0][0].walls[East] = Wall_Here;
-//	maze.cell_grid[0][1].walls[West] = Wall_Here;
+	// TEMPORARY - WE'RE USING A 4 BY 4 MAZE FOR THE DEMO
+	for (uint8_t i = 0; i < MAP_SIZE; ++i)
+		{
+			for (uint8_t j = 0; j < MAP_SIZE; ++j)
+			{
+				// Initialize distance grid
+				maze.distance_grid[i][j] = 200;
+
+				// Initialize cell grid - assume no walls unless border by default
+				maze.cell_grid[i][j].walls[North] = No_Wall_Here;
+				maze.cell_grid[i][j].walls[East] = No_Wall_Here;
+				maze.cell_grid[i][j].walls[South] = No_Wall_Here;
+				maze.cell_grid[i][j].walls[West] = No_Wall_Here;
+				maze.cell_grid[i][j].visited = Is_Not_Visited;
+
+				if(i == 0) maze.cell_grid[i][j].walls[South] = Wall_Here;
+				if(j == 0) maze.cell_grid[i][j].walls[West] = Wall_Here;
+				if(i == MAP_SIZE - 1 || i == 3) maze.cell_grid[i][j].walls[North] = Wall_Here;
+				if(j == MAP_SIZE - 1 || j == 3) maze.cell_grid[i][j].walls[East] = Wall_Here;
+
+			}  // for (uint8_t j = 0; j < MAP_SIZE; ++j)
+		}  // for (uint8_t i = 0; i < MAP_SIZE; ++i)
+	maze.distance_grid[0][0] = 6;
+	maze.distance_grid[0][1] = 5;
+	maze.distance_grid[0][2] = 4;
+	maze.distance_grid[0][3] = 3;
+	maze.distance_grid[1][0] = 5;
+	maze.distance_grid[1][1] = 4;
+	maze.distance_grid[1][2] = 3;
+	maze.distance_grid[1][3] = 2;
+	maze.distance_grid[2][0] = 4;
+	maze.distance_grid[2][1] = 3;
+	maze.distance_grid[2][2] = 2;
+	maze.distance_grid[2][3] = 1;
+	maze.distance_grid[3][0] = 3;
+	maze.distance_grid[3][1] = 2;
+	maze.distance_grid[3][2] = 1;
+	maze.distance_grid[3][3] = 0;
 
 	// Do flood fill algorithm
 
@@ -46,12 +84,157 @@ uint8_t do_flood_fill_algorithm()
 
 	print_maze(&maze, c, direction);
 
+	// TODO - BASICALLY COPY PASTING CODE
+
+		print_maze(&maze, c, direction);
+
+		if(is_there_wall_on_direction(Left))
+		{
+			maze.cell_grid[c.y][c.x].walls[(direction - 1) % 4] = Wall_Here;
+			switch(direction)
+			{
+			case North:
+				if(c.x + 1 < MAP_SIZE) maze.cell_grid[c.y][c.x + 1].walls[West] = Wall_Here;
+				break;
+			case East:
+				if(c.y - 1 > -1) maze.cell_grid[c.y + 1][c.x].walls[South] = Wall_Here;
+				break;
+			case South:
+				if(c.x - 1 > -1) maze.cell_grid[c.y][c.x - 1].walls[East] = Wall_Here;
+				break;
+			case West:
+				if(c.y + 1 < MAP_SIZE) maze.cell_grid[c.y - 1][c.x].walls[North] = Wall_Here;
+				break;
+			case Unknown:
+				break;
+			}  // switch(direction)
+		}  // if(is_there_wall_on_direction(Left))
+
+		if (requested_manual_command != AUTON_CHAR)
+		{
+			return 0;
+		}  // if (requested_manual_command != AUTON_CHAR)
+
+		if(is_there_wall_on_direction(Front))
+		{
+			maze.cell_grid[c.y][c.x].walls[direction] = Wall_Here;
+			switch(direction)
+			{
+			case North:
+				if(c.y + 1 < MAP_SIZE) maze.cell_grid[c.y + 1][c.x].walls[South] = Wall_Here;
+				break;
+			case East:
+				if(c.x + 1 < MAP_SIZE) maze.cell_grid[c.y][c.x + 1].walls[West] = Wall_Here;
+				break;
+			case South:
+				if(c.y - 1 > -1) maze.cell_grid[c.y - 1][c.x].walls[North] = Wall_Here;
+				break;
+			case West:
+				if(c.x - 1 > -1) maze.cell_grid[c.y][c.x - 1].walls[East] = Wall_Here;
+				break;
+			case Unknown:
+				break;
+			}  // switch(direction)
+
+		}  // if(is_there_wall_on_direction(Front))
+
+		if (requested_manual_command != AUTON_CHAR)
+		{
+			return 0;
+		}  // if (requested_manual_command != AUTON_CHAR)
+
+		if(is_there_wall_on_direction(Right))
+		{
+			maze.cell_grid[c.y][c.x].walls[(direction + 1) % 4] = Wall_Here;
+			switch(direction)
+			{
+			case North:
+				if(c.x - 1 > -1) maze.cell_grid[c.y][c.x - 1].walls[East] = Wall_Here;
+				break;
+			case East:
+				if(c.y + 1 < MAP_SIZE) maze.cell_grid[c.y - 1][c.x].walls[North] = Wall_Here;
+				break;
+			case South:
+				if(c.x + 1 < MAP_SIZE) maze.cell_grid[c.y][c.x + 1].walls[West] = Wall_Here;
+				break;
+			case West:
+				if(c.y - 1 > -1) maze.cell_grid[c.y + 1][c.x].walls[South] = Wall_Here;
+				break;
+			case Unknown:
+				break;
+			}  // switch(direction)
+
+		}  // if(is_there_wall_on_direction(Right))
+
+		if (requested_manual_command != AUTON_CHAR)
+		{
+			return 0;
+		}  // if (requested_manual_command != AUTON_CHAR)
+
+		maze.cell_grid[c.y][c.x].visited = 1;
+
+
+		// need to figure next direction to go to and also update rest of distance grid.
+		desired_direction = minus_one_neighbor(&maze, c, &stack);
+
+		if(desired_direction == Unknown)
+		{
+			while(!stack_is_empty(&stack))
+			{
+				if (requested_manual_command != AUTON_CHAR)
+				{
+					return 0;
+				}  // if (requested_manual_command != AUTON_CHAR)
+				if (stack.index >= 100)
+				{
+					char buf2[20];
+					sprintf((char *)buf2, "FAILED,,,,,,,,,,,,,");
+					HAL_UART_Transmit(&huart6, buf2, sizeof(buf2), 1000);
+					return 0;
+				}  // if (stack.index >= 100)
+				// get the cell to test from the stack
+				next_coordinate = pop_stack(&stack);
+				// find a neighbor cell with distance one less than current
+				minus_one_neighbor(&maze, next_coordinate, &stack);
+			}  // while(stack.index != 0)
+			// next_direction is the direction to go to next
+			desired_direction = minus_one_neighbor(&maze, c, &stack);
+		}  // if(next_direction == Unknown)
+		int difference = desired_direction - direction;
+		char buf2[20];
+		sprintf((char *)buf2, "^%i,%i,%i,,,,,,,,,,,,,", direction, desired_direction, difference % 4);
+		HAL_UART_Transmit(&huart6, buf2, sizeof(buf2), 1000);
+		switch(difference % 4)
+		{
+		case 0:
+			break;
+		case 1:
+			rotate_direction_90(Right);
+			break;
+		case 2:
+			rotate_180_degrees();
+			break;
+		case 3:
+			rotate_direction_90(Left);
+			break;
+		}
+
+
+		direction = desired_direction;
+
+		set_servo_angle(Front);
 	while(1)
 	{
 		if (requested_manual_command != AUTON_CHAR)
 		{
 			return 0;
 		}  // if (requested_manual_command != AUTON_CHAR)
+
+		printf("Currently at x=%i, y=%i facing direction=%i.\r\n", c.x, c.y, direction);
+		char buf[20];
+		sprintf((char *)buf, "@%i,%i,%i,,,,,,,,,,,,,", c.x, c.y, (uint8_t)direction);
+		HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
+
 		switch(direction)
 		{
 		case North:
@@ -69,13 +252,6 @@ uint8_t do_flood_fill_algorithm()
 		case Unknown:
 			break;
 		}  // switch(direction)
-
-		// visiting_coord should now be the coordinate that we're on.
-
-		printf("Currently at x=%i, y=%i facing direction=%i.\r\n", c.x, c.y, direction);
-		char buf[20];
-		sprintf((char *)buf, "@%i,%i,%i,,,,,,,,,,,,,", c.x, c.y, direction);
-		HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
 
 		if(!maze.cell_grid[c.y][c.x].visited)
 		{
@@ -177,6 +353,7 @@ uint8_t do_flood_fill_algorithm()
 
 			print_maze(&maze, c, direction);
 		}
+		set_servo_angle(Front);
 
 		if(found_flood_fill_destination(c, &maze))
 		{
@@ -208,7 +385,6 @@ uint8_t do_flood_fill_algorithm()
 			// next_direction is the direction to go to next
 			desired_direction = minus_one_neighbor(&maze, c, &stack);
 		}  // if(next_direction == Unknown)
-
 		int difference = desired_direction - direction;
 		char buf2[20];
 		sprintf((char *)buf2, "^%i,%i,%i,,,,,,,,,,,,,", direction, desired_direction, difference % 4);
@@ -250,39 +426,6 @@ void push_stack(stack* s, coordinate c)
 	s->index = s->index + 1;
 	s->coordinates[s->index] = c;
 }  // void push_stack(Stack* s, uint8_t x, uint8_t y)
-
-void move_forward_and_update(maze_direction d, coordinate c, flood_fill_maze *m)
-{
-	switch(d)
-	{
-	case North:
-		m->cell_grid[c.y][c.x].walls[West] = Wall_Here;
-		m->cell_grid[c.y][c.x].walls[East] = Wall_Here;
-		if(c.x > 0) m->cell_grid[c.y][c.x-1].walls[East] = Wall_Here;
-		if(c.x < 15) m->cell_grid[c.y][c.x+1].walls[West] = Wall_Here;
-		break;
-	case East:
-		m->cell_grid[c.y][c.x].walls[North] = Wall_Here;
-		m->cell_grid[c.y][c.x].walls[South] = Wall_Here;
-		if(c.y > 0) m->cell_grid[c.y-1][c.x].walls[North] = Wall_Here;
-		if(c.y < 15) m->cell_grid[c.y+1][c.x].walls[South] = Wall_Here;
-		break;
-	case South:
-		m->cell_grid[c.y][c.x].walls[West] = Wall_Here;
-		m->cell_grid[c.y][c.x].walls[East] = Wall_Here;
-		if(c.x > 0) m->cell_grid[c.y][c.x-1].walls[East] = Wall_Here;
-		if(c.x < 15) m->cell_grid[c.y][c.x+1].walls[West] = Wall_Here;
-		break;
-	case West:
-		m->cell_grid[c.y][c.x].walls[North] = Wall_Here;
-		m->cell_grid[c.y][c.x].walls[South] = Wall_Here;
-		if(c.y > 0) m->cell_grid[c.y-1][c.x].walls[North] = Wall_Here;
-		if(c.y < 15) m->cell_grid[c.y+1][c.x].walls[South] = Wall_Here;
-		break;
-	case Unknown:
-		break;
-	}  // switch(d)
-}  // void move_forward_and_update(maze_direction d, coordinate c, Flood_Fill_Maze *m)
 
 uint8_t found_flood_fill_destination(coordinate c, flood_fill_maze *maze)
 {
