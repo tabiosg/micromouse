@@ -38,7 +38,7 @@ uint8_t do_flood_fill_algorithm()
 			for (uint8_t j = 0; j < MAP_SIZE; ++j)
 			{
 				// Initialize distance grid
-				maze.distance_grid[i][j] = 200;
+				maze.distance_grid[i][j] = 10;
 
 				// Initialize cell grid - assume no walls unless border by default
 				maze.cell_grid[i][j].walls[North] = No_Wall_Here;
@@ -81,10 +81,14 @@ uint8_t do_flood_fill_algorithm()
 	coordinate c = next_coordinate;  // c is the coordinate that we are currently in
 
 	stack stack;
+	stack.index = 0;
 
 	// TODO - BASICALLY COPY PASTING CODE
 
-	print_maze(&maze, c, direction);
+	printf("Currently at x=%i, y=%i facing direction=%i.\r\n", c.x, c.y, direction);
+	char buf5[20];
+	sprintf((char *)buf5, "@%i,%i,%i,,,,,,,,,,,,,", c.x, c.y, (uint8_t)direction);
+	HAL_UART_Transmit(&huart6, buf5, sizeof(buf5), 1000);
 
 	if (requested_manual_command != AUTON_CHAR)
 	{
@@ -129,11 +133,11 @@ uint8_t do_flood_fill_algorithm()
 			{
 				return 0;
 			}  // if (requested_manual_command != AUTON_CHAR)
-			if (stack.index >= 20)
+			if (stack.index >= 60)
 			{
-				char buf2[20];
-				sprintf((char *)buf2, "FAILED,,,,,,,,,,,,,");
-				HAL_UART_Transmit(&huart6, buf2, sizeof(buf2), 1000);
+				char buf3[20];
+				sprintf((char *)buf3, "&FAILED,,,,,,,,,,,,");
+				HAL_UART_Transmit(&huart6, buf3, sizeof(buf3), 1000);
 				return 0;
 			}  // if (stack.index >= 100)
 			// get the cell to test from the stack
@@ -200,8 +204,6 @@ uint8_t do_flood_fill_algorithm()
 		{
 			// Move in direction for unvisited cell
 			go_forward_one_unit();
-
-			print_maze(&maze, c, direction);
 
 			if(maze.cell_grid[c.y][c.x].walls[(direction + 3) % 4] == No_Wall_Here && is_there_wall_on_direction(Left))
 			{
@@ -301,6 +303,12 @@ uint8_t do_flood_fill_algorithm()
 		if(found_flood_fill_destination(c, &maze))
 		{
 			set_servo_angle(Front);
+
+			printf("Currently at x=%i, y=%i facing direction=%i.\r\n", c.x, c.y, direction);
+			char buf5[20];
+			sprintf((char *)buf5, "@%i,%i,%i,,,,,,,,,,,,,", c.x, c.y, (uint8_t)direction);
+			HAL_UART_Transmit(&huart6, buf5, sizeof(buf5), 1000);
+
 			printf("Completed maze!\r\n");
 			char buf[20];
 			memcpy(buf, "&COMPLETED,,,,,,,,,", 20);
@@ -377,7 +385,7 @@ uint8_t found_flood_fill_destination(coordinate c, flood_fill_maze *maze)
 
 maze_direction minus_one_neighbor(flood_fill_maze *maze, coordinate c, stack *s)
 {
-//	print_distance_grid(maze);
+	print_distance_grid(maze);
 
 	/*
 	 This functions returns the direction that leads to what it thinks will be

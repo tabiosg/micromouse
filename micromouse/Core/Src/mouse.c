@@ -8,23 +8,23 @@ void rotate_direction_90(direction d)
 	switch(d)
 	{
 	case Left:
-		motors_backward(1);
-		HAL_Delay(20);
+//		motors_backward(1);
+//		HAL_Delay(30);
 		rotate_direction(Left, 1);
-		HAL_Delay(345);
-		motors_forward(1);
-		HAL_Delay(79);
+		HAL_Delay(390);
+//		motors_forward(1);
+//		HAL_Delay(60);
 		stop_all_motors();
 		return;
 	case Front:
 		return;
 	case Right:
-		motors_backward(1);
-		HAL_Delay(39);
+//		motors_backward(1);
+//		HAL_Delay(30);
 		rotate_direction(Right, 1);
-		HAL_Delay(369);
-		motors_forward(1);
-		HAL_Delay(20);
+		HAL_Delay(400);
+//		motors_forward(1);
+//		HAL_Delay(30);
 		stop_all_motors();
 		return;
 	}  // switch(d)
@@ -62,6 +62,6 @@ void rotate_360_degrees(direction d)
 void go_forward_one_unit()
 {
 	motors_forward(1);
-	HAL_Delay(709);
+	HAL_Delay(640);
 	stop_all_motors();
 }  // go_forward()
