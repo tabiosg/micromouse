@@ -3,7 +3,7 @@
 
 typedef enum
 {
-	LEFT, FRONT, RIGHT
+	Left, Front, Right
 } direction;
 
 

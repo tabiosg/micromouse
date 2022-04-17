@@ -2,17 +2,16 @@
 #define INC_MOUSE_H_
 
 #include "direction.h"
+#include "stdio.h"
+#include "motors.h"
+#include "main.h"
 
-typedef struct
-{
-
-} Mouse;
-
-
-void rotate_direction(direction d);
+void rotate_direction_90(direction d);
 
 void rotate_180_degrees();
 
-void go_forward();
+void rotate_360_degrees(direction d);
+
+void go_forward_one_unit();
 
 #endif /* INC_MOUSE_H_ */

@@ -1,33 +1,67 @@
 #include "mouse.h"
 
-void rotate_direction(direction d)
+void rotate_direction_90(direction d)
 {
-	// TODO - see how to turn
-	switch (d)
+
+
+	// TODO - make sure numbers are precise enough. need to tune
+	switch(d)
 	{
-	case LEFT:
-		move_motors(LEFT, 10);
-		move_motors(RIGHT, -10);
+	case Left:
+//		motors_backward(1);
+//		HAL_Delay(30);
+		rotate_direction(Left, 1);
+		HAL_Delay(390);
+//		motors_forward(1);
+//		HAL_Delay(60);
+		stop_all_motors();
 		return;
-	case FRONT:
+	case Front:
 		return;
-	case RIGHT:
-		move_motors(LEFT, -10);
-		move_motors(RIGHT, 10);
+	case Right:
+//		motors_backward(1);
+//		HAL_Delay(30);
+		rotate_direction(Right, 1);
+		HAL_Delay(400);
+//		motors_forward(1);
+//		HAL_Delay(30);
+		stop_all_motors();
 		return;
-	}  // switch()
-}
+	}  // switch(d)
+}  // rotate_direction_90(direction d)
 
 void rotate_180_degrees()
 {
-	// TODO - see how to rotate 180 degrees
-	rotate_direction(LEFT);
-	rotate_direction(LEFT);
-}
+	rotate_direction_90(Left);
+	HAL_Delay(200);
+	rotate_direction_90(Left);
 
-void go_forward()
+}  // rotate_180_degrees()
+
+void rotate_360_degrees(direction d)
 {
-	// TODO - see how to go forward
-	move_motors(LEFT, 10);
-	move_motors(RIGHT, 10);
-}
+	// This function is mainly used for testing and tuning
+	switch(d)
+	{
+	case Left:
+		rotate_direction(Left, 1);
+		HAL_Delay(1475);
+		stop_all_motors();
+		return;
+	case Front:
+		return;
+	case Right:
+		rotate_direction(Right, 1);
+		HAL_Delay(1700);
+		stop_all_motors();
+		return;
+	}  // switch(d)
+
+}  // rotate_360_degrees(direction d)
+
+void go_forward_one_unit()
+{
+	motors_forward(1);
+	HAL_Delay(640);
+	stop_all_motors();
+}  // go_forward()
