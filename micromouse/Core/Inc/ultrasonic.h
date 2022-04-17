@@ -8,6 +8,6 @@ extern int risingEdgeInterrupt;
 extern int counter;
 extern float centimeters;
 
-int16_t distance_of_object_in_cm();
+float distance_of_object_in_cm();
 
 #endif /* INC_ULTRASONIC_H_ */

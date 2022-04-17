@@ -6,10 +6,10 @@ void execute_manual_command(char command)
 	switch(command)
 	{
 	case LEFT_CHAR:
-		rotate_direction(Left, 0.6);
+		manual_turn(Left, 0.6);
 		break;
 	case RIGHT_CHAR:
-		rotate_direction(Right, 0.6);
+		manual_turn(Right, 0.6);
 		break;
 	case FORWARD_CHAR:
 		manual_forward();
@@ -29,9 +29,9 @@ void execute_manual_command(char command)
 
 }  // void execute_manual_command(char message[30])
 
-void manual_turn(direction d)
+void manual_turn(direction d, float speed_1)
 {
-	rotate_direction(d, 1);
+	rotate_direction(d, speed_1);
 }  // void manual_turn(direction d)
 
 void manual_forward()

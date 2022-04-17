@@ -6,8 +6,8 @@
 #include "string.h"
 #include "direction.h"
 
-#define LEFT_MOTOR_MULT 172 * 1.30
-#define RIGHT_MOTOR_MULT 200 * 1.30
+#define LEFT_MOTOR_MULT 172
+#define RIGHT_MOTOR_MULT 200
 
 typedef enum
 {
