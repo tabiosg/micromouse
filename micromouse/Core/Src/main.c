@@ -156,6 +156,7 @@ int main(void)
   uint8_t determined_algorithm = determine_algorithm();
 
   requested_manual_command = S_CHAR;  // TODO - change to S_CHAR if manual mode is supported, AUTON_CHAR if not
+//  HAL_Delay(5000);  // TODO - TEMPORARY DELAY
 
   /* USER CODE END 2 */
 
@@ -166,6 +167,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	LEFT_MOTOR_MULT = LEFT_MOTOR_MULT_DEFAULT;
+	RIGHT_MOTOR_MULT = RIGHT_MOTOR_MULT_DEFAULT;
     set_servo_angle(Front);
     if (current_manual_command != COMPLETED_CHAR)
     {

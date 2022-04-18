@@ -7,7 +7,7 @@
 #include "manual_control.h"
 #include "mouse.h"
 
-#define MAP_SIZE 16
+#define MAP_SIZE 4
 
 typedef enum
 {

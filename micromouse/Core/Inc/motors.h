@@ -6,8 +6,13 @@
 #include "string.h"
 #include "direction.h"
 
-#define LEFT_MOTOR_MULT 172
-#define RIGHT_MOTOR_MULT 200
+#define MAX_MULT_CHANGE_RANGE 30
+
+#define LEFT_MOTOR_MULT_DEFAULT 172
+#define RIGHT_MOTOR_MULT_DEFAULT 220
+
+extern int LEFT_MOTOR_MULT;
+extern int RIGHT_MOTOR_MULT;
 
 typedef enum
 {
@@ -21,6 +26,8 @@ void stop_motor(motor_side side);
 void stop_all_motors();
 
 void rotate_direction(direction d, float speed_1);
+
+void calibrate_at_walls();
 
 void motors_forward(float speed_1);
 
