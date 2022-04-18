@@ -64,6 +64,8 @@
 	  uint8_t mode[] = {'M', 'O', 'D', 'E', ':'};
 	  uint8_t direction[] = {'D', 'I', 'R', 'E', 'C', 'T', 'I', 'O', 'N', ':'};
 	  uint8_t location[] = {'L', 'O', 'C', 'A', 'T', 'I', 'O', 'N', ':'};
+	  uint8_t format[] = {'L', 'E', 'F', 'T', ' ', ' ', 'F', 'R', 'O', 'N', 'T', ' ', ' ', 'R', 'I', 'G', 'H', 'T', ' '};
+
 
 	  HAL_Delay(100);
 	  lcdSetCursor(0, 0);
@@ -75,6 +77,9 @@
 
 	  lcdSetCursor(2, 0);
 	  lcdWrite(&location, sizeof(location));
+
+	  lcdSetCursor(3, 0);
+	  lcdWrite(&format, sizeof(format));
 
   }
 

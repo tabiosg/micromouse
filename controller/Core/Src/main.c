@@ -48,7 +48,7 @@ UART_HandleTypeDef huart6;
 
 /* USER CODE BEGIN PV */
 uint8_t UART6_rxBuffer[UART_buffer_size] = {0};
-char received_data[UART_buffer_size];
+uint8_t received_data[UART_buffer_size];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -126,11 +126,64 @@ int main(void)
 
   uint8_t blankline[] = {' ', ' ', ' ', ' ', ' ', ' ', ' '};
 
+  uint32_t row_ports[] = {ROW0_GPIO_Port, ROW1_GPIO_Port, ROW2_GPIO_Port, ROW3_GPIO_Port};
+  uint32_t row_pins[] = {ROW0_Pin, ROW1_Pin, ROW2_Pin, ROW3_Pin};
+
+  uint32_t col_ports[] = {COL0_GPIO_Port, COL1_GPIO_Port, COL2_GPIO_Port, COL3_GPIO_Port};
+  uint32_t col_pins[] = {COL0_Pin, COL1_Pin, COL2_Pin, COL3_Pin};
+
+  uint8_t button = '*';
+
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
+	  // NOTE: With this method, you cannot press the same button twice.
+	  // keypad loop
+
+	  // steady state
+	  for(uint8_t i = 0; i < 4; i++){
+		  HAL_GPIO_WritePin(col_ports[i], col_pins[i], GPIO_PIN_SET);
+	  }
+	  // read if any input pins are high
+	  uint8_t active_row = 5;
+	  for(uint8_t i = 0; i < 4; i++){
+		  if(HAL_GPIO_ReadPin(row_ports[i], row_pins[i])){
+			  active_row = i;
+		  }
+	  }
+
+	  // only continue if a button is pressed
+	  if(active_row < 5){
+		  // read and check activated rows
+		  // do this by outputting 1-hot on col pins
+		  uint8_t active_col = 5;
+		  for(uint8_t i = 0; i < 4; i++){
+			  // set all col pins to 0
+			  for(int j = 0; j < 4; j++){
+				  HAL_GPIO_WritePin(col_ports[j], col_pins[j], GPIO_PIN_RESET);
+			  }
+			  HAL_GPIO_WritePin(col_ports[i], col_pins[i], GPIO_PIN_SET);
+
+			  // if corresponding column is pressed, the active row will be active again
+			  uint8_t col = HAL_GPIO_ReadPin(row_ports[active_row], row_pins[active_row]);
+			  if(col){
+				  active_col = i;
+			  }
+		  }
+
+		  // now we have the active row and column, we know the button pressed.
+		  uint8_t buttons[4][4] = {{'1', '2', '3', 'A'}, {'4', '5', '6', 'B'}, {'7', '8', '9', 'C'}, {'*', '0', '#', 'D'}};
+		  uint8_t new_button = buttons[active_row][active_col];
+		  if(new_button != button){
+			  HAL_UART_Transmit(&huart6, &new_button, sizeof(new_button), 200);
+			  button = new_button;
+		  }
+
+	  }
+	  // end keypad loop
 
 
 	  char tag = received_data[0];
@@ -181,12 +234,35 @@ int main(void)
 	  	  // Handle Location line
 	  	  case '@':
 	  		  lcdSetCursor(2, 10);
-	  		  uint8_t x = received_data[1];
-	  		  uint8_t y = received_data[3];
-	  		  uint8_t facing = received_data[5];
-	  		  char dir[4] = {'N', 'E', 'S', 'W'};
-	  		  char location[] = {'(', x, ',', y, ')', ' ', dir[facing]};
+	  		  uint8_t buf[20];
+	  		  memcpy(buf, received_data, sizeof(received_data));
+	  		  uint8_t x = buf[1];
+	  		  uint8_t y = buf[3];
+	  		  uint8_t facing = buf[5];
+	  		  uint8_t dir[4] = {'N', 'E', 'S', 'W'};
+	  		  int index = facing - '0';
+	  		  uint8_t location[] = {'(', x, ',', y, ')', ' ', dir[index]};
 	  		  lcdWrite(&location, sizeof(location));
+	  		  break;
+
+	  	  // Handle wall detection line
+	  	  case '%': ; //empty statement
+	  		char d = received_data[1];
+	  		char di[] = {received_data[6]};
+	  		  if(d == 'L'){
+	  			lcdSetCursor(3,4);
+	  			lcdWrite(&di, sizeof(di));
+	  		  }
+	  		  else if(d == 'F'){
+	  			lcdSetCursor(3,11);
+	  			di[0] = received_data[7];
+	  			lcdWrite(&di, sizeof(di));
+	  		  }
+	  		  else if(d == 'R'){
+	  			lcdSetCursor(3,18);
+	  			di[0] = received_data[7];
+	  			lcdWrite(&di, sizeof(di));
+	  		  }
 	  		  break;
 
 	  	  default:
@@ -194,6 +270,7 @@ int main(void)
 
 	  }
 
+	  // 50Hz
 	  HAL_Delay(20);
 
 
@@ -363,7 +440,10 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, LD2_Pin|COL0_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOC, COL1_Pin|COL2_Pin|COL3_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
@@ -371,12 +451,25 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : LD2_Pin */
-  GPIO_InitStruct.Pin = LD2_Pin;
+  /*Configure GPIO pins : ROW0_Pin ROW1_Pin ROW2_Pin ROW3_Pin */
+  GPIO_InitStruct.Pin = ROW0_Pin|ROW1_Pin|ROW2_Pin|ROW3_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : LD2_Pin COL0_Pin */
+  GPIO_InitStruct.Pin = LD2_Pin|COL0_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : COL1_Pin COL2_Pin COL3_Pin */
+  GPIO_InitStruct.Pin = COL1_Pin|COL2_Pin|COL3_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
 }
 
