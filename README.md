@@ -2,6 +2,8 @@
 
 For EECS 373, our group decided on making a maze-solving robot project. It served its purpose for our class final presentation, demonstration, and exposition. Created by Abdel, Alan, and Guthrie.
 
+---
+
 ## Description
 
 Our Micromouse is a small robot that is able to solve a 4x4 maze autonomously. 
@@ -35,13 +37,31 @@ The robot drives in tank mode. The speeds of the wheels is determined in the cod
 
 ## Robot Pinout
 
-Will soon be included.
+This will be organized in order of the Nucleo board pins (left to right, top to bottom).
+
+- PA15 - Servo PWM
+- PA1 - Ultrasonic Echo 
+- PB8 - Ultrasonic Trigger
+- PB6 - Left H-Bridge PWM
+- PB7 - Right H-Bridge PWM
+- PA9 - Left H-Bridge Direction
+- PA8 - Right H-Bridge Direction
+- PC6 - USART TX (connects to XBEE)
+- PA12 - USART RX (connects to XBEE)
+
+You will also need to power the connected devices. The H-Bridge pins connect straight to the Zumo with the Arduino headers.
 
 ---
 
 ## Controller Pinout
 
 Will soon be included.
+
+---
+
+## XBEE Settings
+
+The XBEE settings transmit at a baud rate of 9600.
 
 ---
 
