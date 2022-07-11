@@ -8,9 +8,9 @@ For EECS 373, our group decided on making a maze-solving robot project. It serve
 
 Our Micromouse is a small robot that is able to solve a 4x4 maze autonomously. 
 
-The robot itself has a Zumo robot chassis with a STM32F411 Nucleo board on it to control all the onboard operations. It controls the state machine, inputs, and outputs of the robot. Other devices on the robot include an XBEE module, a custom shield, a servo sensor, and an ultrasonic sound sensor.
+The robot itself has a Zumo robot chassis with a STM32F411RET6 Nucleo board on it to control all the onboard operations. It controls the state machine, inputs, and outputs of the robot. Other devices on the robot include an XBEE module, a custom shield, a servo sensor, and an ultrasonic sound sensor.
 
-To complement the robot, there was a controller module. The controller module allows the user to control the robot wirelessly and manually. It also allows the user to monitor the status of the robot (its current state at any given moment, including its status while solving the maze). The controller includes another Nucleo board, an XBEE module, a keypad, and an LCD graphic display. 
+To complement the robot, there was a controller module. The controller module allows the user to control the robot wirelessly and manually. It also allows the user to monitor the status of the robot (its current state at any given moment, including its status while solving the maze). The controller includes another Nucleo board with a STM32F411RET6 chip, an XBEE module, a custom keypad, and an LCD graphic display. 
 
 ---
 
@@ -55,7 +55,18 @@ You will also need to power the connected devices. The H-Bridge pins connect str
 
 ## Controller Pinout
 
-Will soon be included.
+- PC0 - Keypad Row 0
+- PC1 - Keypad Row 1
+- PC2 - Keypad Row 2
+- PC3 - Keypad Row 3
+- PA8 - Keypad Col 0
+- PC7 - Keypad Col 1
+- PC8 - Keypad Col 2
+- PC9 - Keypad Col 3
+- PA2 - USART TX (connects to XBEE)
+- PA3 - USART RX (connects to XBEE)
+- PB10 - LCD I2C SCL
+- PB9 - LCD I2C SDA
 
 ---
 
