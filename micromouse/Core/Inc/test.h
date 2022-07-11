@@ -3,6 +3,7 @@
 
 #include "mouse.h"
 #include "LED.h"
+#include "manual_control.h"
 #include "wall_sensor.h"
 #include "main.h"
 

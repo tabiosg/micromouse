@@ -24,6 +24,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "ultrasonic.h"
+#include "manual_control.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

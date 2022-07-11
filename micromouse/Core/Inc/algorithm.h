@@ -14,7 +14,7 @@ typedef enum
 
 uint8_t determine_algorithm();
 
-void do_search_algorithm(algorithm_type algo);
+uint8_t do_search_algorithm(algorithm_type algo);
 
 void complete_search_algorithm();
 

@@ -1,10 +1,11 @@
 #include "flood_fill.h"
 
-void do_flood_fill_algorithm()
+uint8_t do_flood_fill_algorithm()
 {
 	// Initialize the maze
 	flood_fill_maze maze;
 
+	/*
 	for (uint8_t i = 0; i < MAP_SIZE; ++i)
 	{
 		for (uint8_t j = 0; j < MAP_SIZE; ++j)
@@ -29,8 +30,46 @@ void do_flood_fill_algorithm()
 
 		}  // for (uint8_t j = 0; j < MAP_SIZE; ++j)
 	}  // for (uint8_t i = 0; i < MAP_SIZE; ++i)
-	maze.cell_grid[0][0].walls[East] = Wall_Here;
-	maze.cell_grid[0][1].walls[West] = Wall_Here;
+	*/
+
+	// TEMPORARY - WE'RE USING A 4 BY 4 MAZE FOR THE DEMO
+	for (uint8_t i = 0; i < MAP_SIZE; ++i)
+		{
+			for (uint8_t j = 0; j < MAP_SIZE; ++j)
+			{
+				// Initialize distance grid
+//				maze.distance_grid[i][j] = 255;
+
+				// Initialize cell grid - assume no walls unless border by default
+				maze.cell_grid[i][j].walls[North] = No_Wall_Here;
+				maze.cell_grid[i][j].walls[East] = No_Wall_Here;
+				maze.cell_grid[i][j].walls[South] = No_Wall_Here;
+				maze.cell_grid[i][j].walls[West] = No_Wall_Here;
+				maze.cell_grid[i][j].visited = Is_Not_Visited;
+
+				if(i == 0) maze.cell_grid[i][j].walls[South] = Wall_Here;
+				if(j == 0) maze.cell_grid[i][j].walls[West] = Wall_Here;
+				if(i == MAP_SIZE - 1) maze.cell_grid[i][j].walls[North] = Wall_Here;
+				if(j == MAP_SIZE - 1) maze.cell_grid[i][j].walls[East] = Wall_Here;
+
+			}  // for (uint8_t j = 0; j < MAP_SIZE; ++j)
+		}  // for (uint8_t i = 0; i < MAP_SIZE; ++i)
+	maze.distance_grid[0][0] = 6;
+	maze.distance_grid[0][1] = 5;
+	maze.distance_grid[0][2] = 4;
+	maze.distance_grid[0][3] = 3;
+	maze.distance_grid[1][0] = 5;
+	maze.distance_grid[1][1] = 4;
+	maze.distance_grid[1][2] = 3;
+	maze.distance_grid[1][3] = 2;
+	maze.distance_grid[2][0] = 4;
+	maze.distance_grid[2][1] = 3;
+	maze.distance_grid[2][2] = 2;
+	maze.distance_grid[2][3] = 1;
+	maze.distance_grid[3][0] = 3;
+	maze.distance_grid[3][1] = 2;
+	maze.distance_grid[3][2] = 1;
+	maze.distance_grid[3][3] = 0;
 
 	// Do flood fill algorithm
 
@@ -39,18 +78,105 @@ void do_flood_fill_algorithm()
 	coordinate next_coordinate;
 	init_coordinate(&next_coordinate, 0, 0);  // Always start in South, West corner facing North.
 
-	coordinate c = next_coordinate;  // c is the coordinate that we want to be in
+	coordinate c = next_coordinate;  // c is the coordinate that we are currently in
 
 	stack stack;
+	stack.index = 0;
 
-	print_maze(&maze, c, direction);
+	// TODO - BASICALLY COPY PASTING CODE
 
+	printf("Currently at x=%i, y=%i facing direction=%i.\r\n", c.x, c.y, direction);
+	char buf5[20];
+	sprintf((char *)buf5, "@%i,%i,%i,,,,,,,,,,,,,", c.x, c.y, (uint8_t)direction);
+	HAL_UART_Transmit(&huart6, buf5, sizeof(buf5), 1000);
+
+	if (requested_manual_command != AUTON_CHAR)
+	{
+		return 0;
+	}  // if (requested_manual_command != AUTON_CHAR)
+
+	if(is_there_wall_on_direction(Front))
+	{
+		maze.cell_grid[c.y][c.x].walls[direction] = Wall_Here;
+		if(c.y + 1 < MAP_SIZE) maze.cell_grid[c.y + 1][c.x].walls[South] = Wall_Here;
+
+	}  // if(is_there_wall_on_direction(Front))
+
+	if (requested_manual_command != AUTON_CHAR)
+	{
+		return 0;
+	}  // if (requested_manual_command != AUTON_CHAR)
+
+	if(is_there_wall_on_direction(Right))
+	{
+		maze.cell_grid[c.y][c.x].walls[(direction + 1) % 4] = Wall_Here;
+		if(c.x - 1 > -1) maze.cell_grid[c.y][c.x - 1].walls[East] = Wall_Here;
+
+	}  // if(is_there_wall_on_direction(Right))
+
+	if (requested_manual_command != AUTON_CHAR)
+	{
+		return 0;
+	}  // if (requested_manual_command != AUTON_CHAR)
+
+	maze.cell_grid[c.y][c.x].visited = 1;
+
+
+	// need to figure next direction to go to and also update rest of distance grid.
+	desired_direction = minus_one_neighbor(&maze, c, &stack);
+
+	if(desired_direction == Unknown)
+	{
+		while(!stack_is_empty(&stack))
+		{
+			if (requested_manual_command != AUTON_CHAR)
+			{
+				return 0;
+			}  // if (requested_manual_command != AUTON_CHAR)
+			if (stack.index >= 60)
+			{
+				char buf3[20];
+				sprintf((char *)buf3, "&FAILED,,,,,,,,,,,,");
+				HAL_UART_Transmit(&huart6, buf3, sizeof(buf3), 1000);
+				return 0;
+			}  // if (stack.index >= 100)
+			// get the cell to test from the stack
+			next_coordinate = pop_stack(&stack);
+			// find a neighbor cell with distance one less than current
+			minus_one_neighbor(&maze, next_coordinate, &stack);
+		}  // while(stack.index != 0)
+		// next_direction is the direction to go to next
+		desired_direction = minus_one_neighbor(&maze, c, &stack);
+	}  // if(next_direction == Unknown)
+	int difference = desired_direction - direction + 4;
+	char buf2[20];
+	sprintf((char *)buf2, "^%i,%i,%i,,,,,,,,,,,,,", direction, desired_direction, difference % 4);
+	HAL_UART_Transmit(&huart6, buf2, sizeof(buf2), 1000);
+	switch(difference % 4)
+	{
+	case 0:
+		break;
+	case 1:
+		rotate_direction_90(Right);
+		break;
+	case 2:
+		rotate_180_degrees();
+		break;
+	case 3:
+		rotate_direction_90(Left);
+		break;
+	}
+
+	direction = desired_direction;
+
+	set_servo_angle(Front);
 	while(1)
 	{
-		if (requested_manual_command != 'a')
+		if (requested_manual_command != AUTON_CHAR)
 		{
-			break;
-		}
+			return 0;
+		}  // if (requested_manual_command != AUTON_CHAR)
+
 		switch(direction)
 		{
 		case North:
@@ -69,23 +195,105 @@ void do_flood_fill_algorithm()
 			break;
 		}  // switch(direction)
 
-		// visiting_coord should now be the coordinate that we're on.
-
 		if(!maze.cell_grid[c.y][c.x].visited)
 		{
 			// Move in direction for unvisited cell
-			printf("Going forward one unit into an unvisited cell. \r\n");
 			go_forward_one_unit();
 
-			print_maze(&maze, c, direction);
-
-			printf("Checking if there is wall on left direction. \r\n");
-			if(is_there_wall_on_direction(Left))
+			if(found_flood_fill_destination(c, &maze))
 			{
-				char buf[10] = "WALL LEFT.";
+				set_servo_angle(Front);
+
+				printf("Currently at x=%i, y=%i facing direction=%i.\r\n", c.x, c.y, direction);
+				char buf5[20];
+				sprintf((char *)buf5, "@%i,%i,%i,,,,,,,,,,,,,", c.x, c.y, (uint8_t)direction);
+				HAL_UART_Transmit(&huart6, buf5, sizeof(buf5), 1000);
+
+				printf("Completed maze!\r\n");
+				char buf[20];
+				memcpy(buf, "&COMPLETED,,,,,,,,,", 20);
 				HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
-				printf("There is wall on left direction. \r\n");
-				maze.cell_grid[c.y][c.x].walls[(direction - 1) % 4] = Wall_Here;
+				return 1;
+			}  // if(found_flood_fill_destination(&c, &maze))
+
+			printf("Currently at x=%i, y=%i facing direction=%i.\r\n", c.x, c.y, direction);
+			char buf[20];
+			sprintf((char *)buf, "@%i,%i,%i,,,,,,,,,,,,,", c.x, c.y, (uint8_t)direction);
+			HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
+
+			set_servo_angle(Front);
+			HAL_Delay(1000);
+
+			float front_wall_cm = 20.0f;
+			// DONE TO MAKE SURE CORRECT DISTANCE FROM FRONT WALL
+			for (int i = 0; i < 3; ++i)
+			{
+				front_wall_cm = distance_of_object_in_cm();
+				float desired_front_distance_cm = 5.5f;
+				float front_wall_remainder_cm = front_wall_cm;
+				while (front_wall_remainder_cm > 18.0f)
+				{
+					front_wall_remainder_cm -= 18.0f;
+				}
+				float front_wall_error_cm = front_wall_remainder_cm - desired_front_distance_cm;  // positive number means we're too far away
+				float front_wall_error_in = front_wall_error_cm * 0.39;
+				if (i == 0)
+
+
+				if (front_wall_error_in > 0)
+				{
+					motors_forward(0.75f);
+					HAL_Delay(front_wall_error_in * 100.0f * 1.33f);
+					stop_all_motors();
+					HAL_Delay(300);
+				}
+				else
+				{
+					motors_backward(0.75f);
+					HAL_Delay(front_wall_error_in * -100.0f * 1.33f);
+					stop_all_motors();
+					HAL_Delay(300);
+				}
+
+			}
+			char buf_front[20];
+			printf(front_wall_cm < 16 ? "There is a wall in front.\r\n" : "There is no wall in front.\r\n");
+			memcpy(buf_front, front_wall_cm < 16 ? "%FRONT,1,,,,,,,,,,," : "%FRONT,0,,,,,,,,,,,", 20);
+			HAL_UART_Transmit(&huart6, buf_front, sizeof(buf_front), 1000);
+
+
+			set_servo_angle(Left);
+			HAL_Delay(1000);
+			float distance_left_cm = distance_of_object_in_cm();
+			char buf_left[20];
+			printf(distance_left_cm < 16 ? "There is a wall on the left.\r\n" : "There is no wall on the left.\r\n");
+			memcpy(buf_left, distance_left_cm < 16 ? "\%LEFT,1,,,,,,,,,,,," : "\%LEFT,0,,,,,,,,,,,,", 20);
+			HAL_UART_Transmit(&huart6, buf_left, sizeof(buf_left), 1000);
+
+
+
+			set_servo_angle(Right);
+			HAL_Delay(1000);
+			float distance_right_cm = distance_of_object_in_cm();
+
+			char buf_right[20];
+			printf(distance_right_cm < 16 ? "There is a wall on the right.\r\n" : "There is no wall on the right.\r\n");
+			memcpy(buf_right, distance_right_cm < 16 ? "%RIGHT,1,,,,,,,,,,," : "%RIGHT,0,,,,,,,,,,,", 20);
+			HAL_UART_Transmit(&huart6, buf_right, sizeof(buf_right), 1000);
+
+			set_servo_angle(Front);
+
+			if (distance_left_cm < 16 && distance_right_cm < 16) {
+
+				float distance_difference_right_left_cm = distance_right_cm - distance_left_cm;
+				int proposed_left_motor_mult = LEFT_MOTOR_MULT - distance_difference_right_left_cm * 10;
+				// Subtract for the left motor multiplier because the left motor is actually the right one
+				LEFT_MOTOR_MULT = proposed_left_motor_mult < LEFT_MOTOR_MULT_DEFAULT - MAX_MULT_CHANGE_RANGE ? LEFT_MOTOR_MULT : proposed_left_motor_mult;
+				LEFT_MOTOR_MULT = proposed_left_motor_mult > LEFT_MOTOR_MULT_DEFAULT + MAX_MULT_CHANGE_RANGE ? LEFT_MOTOR_MULT : proposed_left_motor_mult;
+			}
+			if(distance_left_cm < 16)
+			{
+				maze.cell_grid[c.y][c.x].walls[(direction + 3) % 4] = Wall_Here;
 				switch(direction)
 				{
 				case North:
@@ -105,12 +313,13 @@ void do_flood_fill_algorithm()
 				}  // switch(direction)
 			}  // if(is_there_wall_on_direction(Left))
 
-			printf("Checking if there is wall in front. \r\n");
-			if(is_there_wall_on_direction(Front))
+			if (requested_manual_command != AUTON_CHAR)
 			{
-				char buf[11] = "WALL FRONT.";
-				HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
-				printf("There is wall in front. \r\n");
+				return 0;
+			}  // if (requested_manual_command != AUTON_CHAR)
+
+			if(front_wall_cm < 16)
+			{
 				maze.cell_grid[c.y][c.x].walls[direction] = Wall_Here;
 				switch(direction)
 				{
@@ -131,12 +340,14 @@ void do_flood_fill_algorithm()
 				}  // switch(direction)
 
 			}  // if(is_there_wall_on_direction(Front))
-			printf("Checking if there is wall on right direction. \r\n");
-			if(is_there_wall_on_direction(Right))
+
+			if (requested_manual_command != AUTON_CHAR)
 			{
-				char buf[11] = "WALL RIGHT.";
-				HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
-				printf("There is wall on right. \r\n");
+				return 0;
+			}  // if (requested_manual_command != AUTON_CHAR)
+
+			if(distance_right_cm < 16)
+			{
 				maze.cell_grid[c.y][c.x].walls[(direction + 1) % 4] = Wall_Here;
 				switch(direction)
 				{
@@ -158,6 +369,10 @@ void do_flood_fill_algorithm()
 
 			}  // if(is_there_wall_on_direction(Right))
 
+			if (requested_manual_command != AUTON_CHAR)
+			{
+				return 0;
+			}  // if (requested_manual_command != AUTON_CHAR)
 
 			maze.cell_grid[c.y][c.x].visited = 1;
 
@@ -165,16 +380,32 @@ void do_flood_fill_algorithm()
 		else
 		{
 			// Move in direction for visited cell
-			printf("Going forward one unit into an already visited cell. Checking for walls. \r\n");
 			go_forward_one_unit();
+
+			printf("Currently at x=%i, y=%i facing direction=%i.\r\n", c.x, c.y, direction);
+			char buf[20];
+			sprintf((char *)buf, "@%i,%i,%i,,,,,,,,,,,,,", c.x, c.y, (uint8_t)direction);
+			HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
 
 			print_maze(&maze, c, direction);
 		}
 
+		// DONE TO MAKE SURE CORRECT ANGLE
+
 		if(found_flood_fill_destination(c, &maze))
 		{
-			printf("Successfully found the center of the maze! \r\n");
-			return;
+			set_servo_angle(Front);
+
+			printf("Currently at x=%i, y=%i facing direction=%i.\r\n", c.x, c.y, direction);
+			char buf5[20];
+			sprintf((char *)buf5, "@%i,%i,%i,,,,,,,,,,,,,", c.x, c.y, (uint8_t)direction);
+			HAL_UART_Transmit(&huart6, buf5, sizeof(buf5), 1000);
+
+			printf("Completed maze!\r\n");
+			char buf[20];
+			memcpy(buf, "&COMPLETED,,,,,,,,,", 20);
+			HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
+			return 1;
 		}  // if(found_flood_fill_destination(&c, &maze))
 
 
@@ -185,6 +416,10 @@ void do_flood_fill_algorithm()
 		{
 			while(!stack_is_empty(&stack))
 			{
+				if (requested_manual_command != AUTON_CHAR)
+				{
+					return 0;
+				}  // if (requested_manual_command != AUTON_CHAR)
 				// get the cell to test from the stack
 				next_coordinate = pop_stack(&stack);
 				// find a neighbor cell with distance one less than current
@@ -193,27 +428,22 @@ void do_flood_fill_algorithm()
 			// next_direction is the direction to go to next
 			desired_direction = minus_one_neighbor(&maze, c, &stack);
 		}  // if(next_direction == Unknown)
-
-		int difference = direction - desired_direction;
+		int difference = desired_direction - direction + 4;
+		char buf2[20];
+		sprintf((char *)buf2, "^%i,%i,%i,,,,,,,,,,,,,", direction, desired_direction, difference % 4);
+		HAL_UART_Transmit(&huart6, buf2, sizeof(buf2), 1000);
 		switch(difference % 4)
 		{
 		case 0:
-			printf("Will stay facing forward. \r\n");
 			break;
 		case 1:
-			printf("Turning left. \r\n");
-			rotate_direction_90(Left);
-			// TODO - might need to calibrate
+			rotate_direction_90(Right);
 			break;
 		case 2:
-			printf("Turning 180 degrees. \r\n");
 			rotate_180_degrees();
-			// TODO - might need to calibrate
 			break;
 		case 3:
-			printf("Turning right. \r\n");
-			rotate_direction_90(Right);
-			// TODO - might need to calibrate
+			rotate_direction_90(Left);
 			break;
 		}
 
@@ -239,39 +469,6 @@ void push_stack(stack* s, coordinate c)
 	s->coordinates[s->index] = c;
 }  // void push_stack(Stack* s, uint8_t x, uint8_t y)
 
-void move_forward_and_update(maze_direction d, coordinate c, flood_fill_maze *m)
-{
-	switch(d)
-	{
-	case North:
-		m->cell_grid[c.y][c.x].walls[West] = Wall_Here;
-		m->cell_grid[c.y][c.x].walls[East] = Wall_Here;
-		if(c.x > 0) m->cell_grid[c.y][c.x-1].walls[East] = Wall_Here;
-		if(c.x < 15) m->cell_grid[c.y][c.x+1].walls[West] = Wall_Here;
-		break;
-	case East:
-		m->cell_grid[c.y][c.x].walls[North] = Wall_Here;
-		m->cell_grid[c.y][c.x].walls[South] = Wall_Here;
-		if(c.y > 0) m->cell_grid[c.y-1][c.x].walls[North] = Wall_Here;
-		if(c.y < 15) m->cell_grid[c.y+1][c.x].walls[South] = Wall_Here;
-		break;
-	case South:
-		m->cell_grid[c.y][c.x].walls[West] = Wall_Here;
-		m->cell_grid[c.y][c.x].walls[East] = Wall_Here;
-		if(c.x > 0) m->cell_grid[c.y][c.x-1].walls[East] = Wall_Here;
-		if(c.x < 15) m->cell_grid[c.y][c.x+1].walls[West] = Wall_Here;
-		break;
-	case West:
-		m->cell_grid[c.y][c.x].walls[North] = Wall_Here;
-		m->cell_grid[c.y][c.x].walls[South] = Wall_Here;
-		if(c.y > 0) m->cell_grid[c.y-1][c.x].walls[North] = Wall_Here;
-		if(c.y < 15) m->cell_grid[c.y+1][c.x].walls[South] = Wall_Here;
-		break;
-	case Unknown:
-		break;
-	}  // switch(d)
-}  // void move_forward_and_update(maze_direction d, coordinate c, Flood_Fill_Maze *m)
-
 uint8_t found_flood_fill_destination(coordinate c, flood_fill_maze *maze)
 {
 	return maze->distance_grid[c.y][c.x] == 0;
@@ -288,7 +485,11 @@ maze_direction minus_one_neighbor(flood_fill_maze *maze, coordinate c, stack *s)
 	 tile.
 	 */
 
+	// TODO CHANGE WHEN BACK TO 16X16 MAZE
+	/*
 	uint16_t min_dist = MAP_SIZE * MAP_SIZE + 4;
+	 */
+	uint16_t min_dist = 20;
 
 	// need to find target distance by looking through neighbors
 	int16_t target = maze->distance_grid[c.y][c.x] - 1;
@@ -418,15 +619,10 @@ void print_maze(flood_fill_maze *maze, coordinate c, maze_direction direction)
 
 	for (int8_t i = MAP_SIZE - 1; i >= 0; --i)
 	{
-		char buf[16];
 		for (uint8_t j = 0; j < MAP_SIZE; ++j)
 		{
-			buf[i] = maze_map[i][j];
 			printf("%c", maze_map[i][j]);
 		}  // for (uint8_t j = 0; j < MAP_SIZE; ++j)
-//		HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
-//		char buf2[30] = "\r\n";
-//		HAL_UART_Transmit(&huart6, buf2, sizeof(buf2), 1000);
 
 		printf("\r\n");
 	}  // for (int8_t i = MAP_SIZE - 1; i >= 0; --i)
@@ -439,16 +635,10 @@ void print_distance_grid(flood_fill_maze *maze)
 
 	for (int8_t i = MAP_SIZE - 1; i >= 0; --i)
 	{
-		char buf[16];
 		for (uint8_t j = 0; j < MAP_SIZE; ++j)
 		{
-			buf[i] = maze->distance_grid[i][j];
 			printf("%c", 'a' + maze->distance_grid[i][j]);
 		}  // for (uint8_t j = 0; j < MAP_SIZE; ++j)
-//		HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
-//		char buf2[30] = "\r\n";
-//		HAL_UART_Transmit(&huart6, buf2, sizeof(buf2), 1000);
-
 		printf("\r\n");
 	}  // for (int8_t i = MAP_SIZE - 1; i >= 0; --i)
 }  // void print_distance_grid(flood_fill_maze *maze)

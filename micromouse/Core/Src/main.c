@@ -80,8 +80,24 @@ static void MX_USART2_UART_Init(void);
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
+	HAL_NVIC_DisableIRQ(USART6_IRQn);
+	// Save the last command
+
+	// Enable Interrupts
+	HAL_NVIC_EnableIRQ(USART6_IRQn);
+	HAL_StatusTypeDef ret = HAL_UART_Receive_IT(&huart6, UART6_rxBuffer, UART_buffer_size);
+
+	//	__HAL_UART_CLEAR_FLAG(&huart6, UART_CLEAR_OREF);
+	//__HAL_UART_SEND_REQ(JETSON_UART, UART_RXDATA_FLUSH_REQUEST);
+
+	if (ret != HAL_OK) {
+		Error_Handler();
+		HAL_UART_Abort_IT(&huart6);
+		SET_BIT(huart6.Instance->CR3, USART_CR3_EIE);
+		HAL_UART_Receive_IT(&huart6, UART6_rxBuffer, UART_buffer_size);
+	}
+	HAL_NVIC_ClearPendingIRQ(USART6_IRQn);
 	requested_manual_command = UART6_rxBuffer[0];
-    HAL_UART_Receive_IT(&huart6, UART6_rxBuffer, UART_buffer_size);
 }
 
 /* USER CODE END 0 */
@@ -140,7 +156,7 @@ int main(void)
   HAL_UART_Receive_IT(&huart6, UART6_rxBuffer, UART_buffer_size);
   uint8_t determined_algorithm = determine_algorithm();
 
-  requested_manual_command = 's';  // TODO - change to 's' if manual mode is supported
+  requested_manual_command = S_CHAR;  // TODO - change to S_CHAR if manual mode is supported, AUTON_CHAR if not
 
   /* USER CODE END 2 */
 
@@ -151,17 +167,47 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  while (current_manual_command != 'a')
+	LEFT_MOTOR_MULT = LEFT_MOTOR_MULT_DEFAULT;
+	RIGHT_MOTOR_MULT = RIGHT_MOTOR_MULT_DEFAULT;
+    set_servo_angle(Front);
+    if (current_manual_command != COMPLETED_CHAR)
+    {
+		printf("Currently changing to manual mode.\r\n");
+		char buf[20];
+		memcpy(buf, "&MANUAL,,,,,,,,,,,,", 20);
+		HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
+    }  // if (current_manual_command != COMPLETED_CHAR && current_manual_command != S_CHAR)
+
+	  while (current_manual_command != AUTON_CHAR)
 	  {
+//			printf("Currently changing to manual mode.\r\n");
+//			char buf[20];
+//			memcpy(buf, "&MANUAL,,,,,,,,,,,,", 20);
+//			HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
 		  if(requested_manual_command != current_manual_command)
 		  {
 			  execute_manual_command(requested_manual_command);
 		  }  // if(requested_manual_command != current_manual_command)
-	  }  // while (current_manual_command != 'a')
-	  do_search_algorithm(determined_algorithm);
-	  complete_search_algorithm();
-	  requested_manual_command = 's';
-	  current_manual_command = 's';
+	  }  // while (current_manual_command != AUTON_CHAR)
+
+    set_servo_angle(Front);
+    printf("Changing to autonomous mode.\r\n");
+    char buf[20];
+    memcpy(buf, "&AUTONOMOUS,,,,,,,,", 20);
+    HAL_UART_Transmit(&huart6, buf, sizeof(buf), 1000);
+
+	  uint8_t completed = do_search_algorithm(determined_algorithm);
+	  
+    if (completed)
+    {
+      complete_search_algorithm();
+      requested_manual_command = COMPLETED_CHAR;
+      current_manual_command = COMPLETED_CHAR;
+    }  // if (completed)
+    else
+    {
+	  current_manual_command = S_CHAR;
+    }
   }  // while (1)
   /* USER CODE END 3 */
 }
