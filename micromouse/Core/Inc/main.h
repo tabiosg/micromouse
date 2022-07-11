@@ -50,7 +50,6 @@ extern uint8_t UART6_rxBuffer[];
 extern char current_manual_command;
 extern char requested_manual_command;
 
-
 extern UART_HandleTypeDef huart2;
 extern UART_HandleTypeDef huart6;
 

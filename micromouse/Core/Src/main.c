@@ -37,6 +37,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define UART_buffer_size 30
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
