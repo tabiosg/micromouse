@@ -14,7 +14,7 @@
 
 void execute_manual_command(char command);
 
-void manual_turn(direction d);
+void manual_turn(direction d, float speed_1);
 
 void manual_forward();
 

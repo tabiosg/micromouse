@@ -166,6 +166,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	LEFT_MOTOR_MULT = LEFT_MOTOR_MULT_DEFAULT;
+	RIGHT_MOTOR_MULT = RIGHT_MOTOR_MULT_DEFAULT;
     set_servo_angle(Front);
     if (current_manual_command != COMPLETED_CHAR)
     {

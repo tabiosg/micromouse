@@ -2,10 +2,10 @@
 
 int risingEdgeInterrupt = 1;
 int counter;
-float centimeters;
+float centimeters = 18;
 
-int16_t distance_of_object_in_cm()
+float distance_of_object_in_cm()
 {
 	printf("Distance is %f cm\r\n", centimeters);
 	return centimeters;
-}  // int16_t distance_of_object_in_cm()
+}  // float distance_of_object_in_cm()
