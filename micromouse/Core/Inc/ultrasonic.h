@@ -4,9 +4,9 @@
 #include "main.h"
 #include "stdio.h"
 
-extern int risingEdgeInterrupt;
-extern int counter;
-extern float centimeters;
+int risingEdgeInterrupt = 1;
+int counter;
+float centimeters = 18;
 
 float distance_of_object_in_cm();
 

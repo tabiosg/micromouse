@@ -1,8 +1,5 @@
 #include "motors.h"
 
-int LEFT_MOTOR_MULT = LEFT_MOTOR_MULT_DEFAULT;
-int RIGHT_MOTOR_MULT = RIGHT_MOTOR_MULT_DEFAULT;
-
 void set_motor_speed(motor_side side, int16_t speed400)
 {
 	// speed400 is a number in [-400, 400]
