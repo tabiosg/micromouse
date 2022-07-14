@@ -136,4 +136,4 @@ void go_forward_one_unit()
 	HAL_Delay(200);
 	calibrate_at_walls();
 	recalibrate_by_turning();
-}  // go_forward()
+}  // go_forward_one_unit()

@@ -49,9 +49,8 @@ micromouse.map \
 SIZE_OUTPUT += \
 default.size.stdout \
 
-OBJDUMP_LIST += \
-micromouse.list \
-
+SIZE_OUTPUT += \
+default.size.stdout \
 
 # All Target
 all: main-build

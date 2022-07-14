@@ -37,6 +37,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define UART_buffer_size 30
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -156,7 +157,6 @@ int main(void)
   uint8_t determined_algorithm = determine_algorithm();
 
   requested_manual_command = S_CHAR;  // TODO - change to S_CHAR if manual mode is supported, AUTON_CHAR if not
-//  HAL_Delay(5000);  // TODO - TEMPORARY DELAY
 
   /* USER CODE END 2 */
 

@@ -195,7 +195,6 @@ uint8_t do_flood_fill_algorithm()
 			break;
 		}  // switch(direction)
 
-
 		if(!maze.cell_grid[c.y][c.x].visited)
 		{
 			// Move in direction for unvisited cell
