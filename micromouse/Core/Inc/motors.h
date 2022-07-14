@@ -6,10 +6,11 @@
 #include "string.h"
 #include "direction.h"
 
-#define MAX_MULT_CHANGE_RANGE 30
+#define MAX_MULT_CHANGE_RANGE 15
+#define MOTOR_MULT_CHANGE_MULTIPLIER 5
 
 #define LEFT_MOTOR_MULT_DEFAULT 172
-#define RIGHT_MOTOR_MULT_DEFAULT 220
+#define RIGHT_MOTOR_MULT_DEFAULT 210
 
 extern int LEFT_MOTOR_MULT;
 extern int RIGHT_MOTOR_MULT;

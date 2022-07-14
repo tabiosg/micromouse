@@ -90,10 +90,7 @@ uint8_t do_flood_fill_algorithm()
 	sprintf((char *)buf5, "@%i,%i,%i,,,,,,,,,,,,,", c.x, c.y, (uint8_t)direction);
 	HAL_UART_Transmit(&huart6, buf5, sizeof(buf5), 1000);
 
-	if (requested_manual_command != AUTON_CHAR)
-	{
-		return 0;
-	}  // if (requested_manual_command != AUTON_CHAR)
+	if (requested_manual_command != AUTON_CHAR) return 0;
 
 	if(is_there_wall_on_direction(Front))
 	{
@@ -102,10 +99,7 @@ uint8_t do_flood_fill_algorithm()
 
 	}  // if(is_there_wall_on_direction(Front))
 
-	if (requested_manual_command != AUTON_CHAR)
-	{
-		return 0;
-	}  // if (requested_manual_command != AUTON_CHAR)
+	if (requested_manual_command != AUTON_CHAR) return 0;
 
 	if(is_there_wall_on_direction(Right))
 	{
@@ -114,10 +108,7 @@ uint8_t do_flood_fill_algorithm()
 
 	}  // if(is_there_wall_on_direction(Right))
 
-	if (requested_manual_command != AUTON_CHAR)
-	{
-		return 0;
-	}  // if (requested_manual_command != AUTON_CHAR)
+	if (requested_manual_command != AUTON_CHAR) return 0;
 
 	maze.cell_grid[c.y][c.x].visited = 1;
 
@@ -129,10 +120,7 @@ uint8_t do_flood_fill_algorithm()
 	{
 		while(!stack_is_empty(&stack))
 		{
-			if (requested_manual_command != AUTON_CHAR)
-			{
-				return 0;
-			}  // if (requested_manual_command != AUTON_CHAR)
+			if (requested_manual_command != AUTON_CHAR) return 0;
 			if (stack.index >= 60)
 			{
 				char buf3[20];
@@ -172,10 +160,7 @@ uint8_t do_flood_fill_algorithm()
 	set_servo_angle(Front);
 	while(1)
 	{
-		if (requested_manual_command != AUTON_CHAR)
-		{
-			return 0;
-		}  // if (requested_manual_command != AUTON_CHAR)
+		if (requested_manual_command != AUTON_CHAR) return 0;
 
 		switch(direction)
 		{
@@ -194,6 +179,9 @@ uint8_t do_flood_fill_algorithm()
 		case Unknown:
 			break;
 		}  // switch(direction)
+
+		LEFT_MOTOR_MULT = LEFT_MOTOR_MULT_DEFAULT;
+		RIGHT_MOTOR_MULT = RIGHT_MOTOR_MULT_DEFAULT;
 
 
 		if(!maze.cell_grid[c.y][c.x].visited)
@@ -224,42 +212,11 @@ uint8_t do_flood_fill_algorithm()
 
 			set_servo_angle(Front);
 			HAL_Delay(1000);
+			float distance_front_cm = distance_of_object_in_cm();
 
-			float front_wall_cm = 20.0f;
-			// DONE TO MAKE SURE CORRECT DISTANCE FROM FRONT WALL
-			for (int i = 0; i < 3; ++i)
-			{
-				front_wall_cm = distance_of_object_in_cm();
-				float desired_front_distance_cm = 5.5f;
-				float front_wall_remainder_cm = front_wall_cm;
-				while (front_wall_remainder_cm > 18.0f)
-				{
-					front_wall_remainder_cm -= 18.0f;
-				}
-				float front_wall_error_cm = front_wall_remainder_cm - desired_front_distance_cm;  // positive number means we're too far away
-				float front_wall_error_in = front_wall_error_cm * 0.39;
-				if (i == 0)
-
-
-				if (front_wall_error_in > 0)
-				{
-					motors_forward(0.75f);
-					HAL_Delay(front_wall_error_in * 100.0f * 1.33f);
-					stop_all_motors();
-					HAL_Delay(300);
-				}
-				else
-				{
-					motors_backward(0.75f);
-					HAL_Delay(front_wall_error_in * -100.0f * 1.33f);
-					stop_all_motors();
-					HAL_Delay(300);
-				}
-
-			}
 			char buf_front[20];
-			printf(front_wall_cm < 16 ? "There is a wall in front.\r\n" : "There is no wall in front.\r\n");
-			memcpy(buf_front, front_wall_cm < 16 ? "%FRONT,1,,,,,,,,,,," : "%FRONT,0,,,,,,,,,,,", 20);
+			printf(distance_front_cm < WALL_DISTANCE_CM ? "There is a wall in front.\r\n" : "There is no wall in front.\r\n");
+			memcpy(buf_front, distance_front_cm < WALL_DISTANCE_CM ? "%FRONT,1,,,,,,,,,,," : "%FRONT,0,,,,,,,,,,,", 20);
 			HAL_UART_Transmit(&huart6, buf_front, sizeof(buf_front), 1000);
 
 
@@ -267,8 +224,8 @@ uint8_t do_flood_fill_algorithm()
 			HAL_Delay(1000);
 			float distance_left_cm = distance_of_object_in_cm();
 			char buf_left[20];
-			printf(distance_left_cm < 16 ? "There is a wall on the left.\r\n" : "There is no wall on the left.\r\n");
-			memcpy(buf_left, distance_left_cm < 16 ? "\%LEFT,1,,,,,,,,,,,," : "\%LEFT,0,,,,,,,,,,,,", 20);
+			printf(distance_left_cm < WALL_DISTANCE_CM ? "There is a wall on the left.\r\n" : "There is no wall on the left.\r\n");
+			memcpy(buf_left, distance_left_cm < WALL_DISTANCE_CM ? "\%LEFT,1,,,,,,,,,,,," : "\%LEFT,0,,,,,,,,,,,,", 20);
 			HAL_UART_Transmit(&huart6, buf_left, sizeof(buf_left), 1000);
 
 
@@ -278,21 +235,94 @@ uint8_t do_flood_fill_algorithm()
 			float distance_right_cm = distance_of_object_in_cm();
 
 			char buf_right[20];
-			printf(distance_right_cm < 16 ? "There is a wall on the right.\r\n" : "There is no wall on the right.\r\n");
-			memcpy(buf_right, distance_right_cm < 16 ? "%RIGHT,1,,,,,,,,,,," : "%RIGHT,0,,,,,,,,,,,", 20);
+			printf(distance_right_cm < WALL_DISTANCE_CM ? "There is a wall on the right.\r\n" : "There is no wall on the right.\r\n");
+			memcpy(buf_right, distance_right_cm < WALL_DISTANCE_CM ? "%RIGHT,1,,,,,,,,,,," : "%RIGHT,0,,,,,,,,,,,", 20);
 			HAL_UART_Transmit(&huart6, buf_right, sizeof(buf_right), 1000);
 
 			set_servo_angle(Front);
 
-			if (distance_left_cm < 16 && distance_right_cm < 16) {
+//			if (distance_left_cm < WALL_DISTANCE_CM && distance_right_cm < WALL_DISTANCE_CM)
+//			{
+//
+//				if (distance_left_cm < TOO_CLOSE_DISTANCE_CM || distance_right_cm < TOO_CLOSE_DISTANCE_CM)
+//				{
+//					motors_backward(0.5);
+//					HAL_Delay(200);
+//					stop_all_motors();
+//					HAL_Delay(500);
+//				}
+//
+//
+//				float distance_difference_right_left_cm = distance_right_cm - distance_left_cm;
+//				int proposed_left_motor_mult = LEFT_MOTOR_MULT - distance_difference_right_left_cm * MOTOR_MULT_CHANGE_MULTIPLIER;
+//				// Subtract for the left motor multiplier because the left motor is actually the right one
+//				LEFT_MOTOR_MULT = proposed_left_motor_mult < LEFT_MOTOR_MULT_DEFAULT - MAX_MULT_CHANGE_RANGE ? LEFT_MOTOR_MULT : proposed_left_motor_mult;
+//				LEFT_MOTOR_MULT = proposed_left_motor_mult > LEFT_MOTOR_MULT_DEFAULT + MAX_MULT_CHANGE_RANGE ? LEFT_MOTOR_MULT : proposed_left_motor_mult;
+//
+//				if (distance_left_cm < TOO_CLOSE_DISTANCE_CM || distance_right_cm < TOO_CLOSE_DISTANCE_CM)
+//				{
+//					motors_forward(0.5);
+//					HAL_Delay(200);
+//					stop_all_motors();
+//					HAL_Delay(500);
+//				}
+//			}
 
-				float distance_difference_right_left_cm = distance_right_cm - distance_left_cm;
-				int proposed_left_motor_mult = LEFT_MOTOR_MULT - distance_difference_right_left_cm * 10;
-				// Subtract for the left motor multiplier because the left motor is actually the right one
-				LEFT_MOTOR_MULT = proposed_left_motor_mult < LEFT_MOTOR_MULT_DEFAULT - MAX_MULT_CHANGE_RANGE ? LEFT_MOTOR_MULT : proposed_left_motor_mult;
-				LEFT_MOTOR_MULT = proposed_left_motor_mult > LEFT_MOTOR_MULT_DEFAULT + MAX_MULT_CHANGE_RANGE ? LEFT_MOTOR_MULT : proposed_left_motor_mult;
+			// ALL NEW BELOW
+
+
+			if (distance_left_cm < TOO_CLOSE_DISTANCE_CM || distance_right_cm < TOO_CLOSE_DISTANCE_CM)
+			{
+				motors_backward(1);
+				HAL_Delay(500);
+				stop_all_motors();
+				HAL_Delay(500);
 			}
-			if(distance_left_cm < 16)
+
+			float right_remainder_cm = distance_right_cm;
+			while (right_remainder_cm > 18.0f)
+			{
+				right_remainder_cm -= 18.0f;
+			}
+			float left_remainder_cm = distance_left_cm;
+			while (left_remainder_cm > 18.0f)
+			{
+				left_remainder_cm -= 18.0f;
+			}
+
+
+			float distance_difference_right_left_cm = right_remainder_cm - left_remainder_cm;
+			int proposed_left_motor_mult = LEFT_MOTOR_MULT - distance_difference_right_left_cm * MOTOR_MULT_CHANGE_MULTIPLIER;
+			// Subtract for the left motor multiplier because the left motor is actually the right one
+			LEFT_MOTOR_MULT = proposed_left_motor_mult < LEFT_MOTOR_MULT_DEFAULT - MAX_MULT_CHANGE_RANGE ? LEFT_MOTOR_MULT : proposed_left_motor_mult;
+			LEFT_MOTOR_MULT = proposed_left_motor_mult > LEFT_MOTOR_MULT_DEFAULT + MAX_MULT_CHANGE_RANGE ? LEFT_MOTOR_MULT : proposed_left_motor_mult;
+
+			if (distance_left_cm < TOO_CLOSE_DISTANCE_CM || distance_right_cm < TOO_CLOSE_DISTANCE_CM)
+			{
+				if (distance_right_cm < TOO_CLOSE_DISTANCE_CM)
+				{
+					LEFT_MOTOR_MULT += 15;
+				}
+				else
+				{
+					LEFT_MOTOR_MULT -= 15;
+				}
+				motors_forward(1);
+				HAL_Delay(500);
+				stop_all_motors();
+				HAL_Delay(500);
+				if (distance_right_cm < TOO_CLOSE_DISTANCE_CM)
+				{
+					LEFT_MOTOR_MULT -= 15;
+				}
+				else
+				{
+					LEFT_MOTOR_MULT += 15;
+				}
+			}
+			// ALL NEW ABOVE
+
+			if(distance_left_cm < WALL_DISTANCE_CM)
 			{
 				maze.cell_grid[c.y][c.x].walls[(direction + 3) % 4] = Wall_Here;
 				switch(direction)
@@ -314,12 +344,9 @@ uint8_t do_flood_fill_algorithm()
 				}  // switch(direction)
 			}  // if(is_there_wall_on_direction(Left))
 
-			if (requested_manual_command != AUTON_CHAR)
-			{
-				return 0;
-			}  // if (requested_manual_command != AUTON_CHAR)
+			if (requested_manual_command != AUTON_CHAR) return 0;
 
-			if(front_wall_cm < 16)
+			if(distance_front_cm < WALL_DISTANCE_CM)
 			{
 				maze.cell_grid[c.y][c.x].walls[direction] = Wall_Here;
 				switch(direction)
@@ -342,12 +369,9 @@ uint8_t do_flood_fill_algorithm()
 
 			}  // if(is_there_wall_on_direction(Front))
 
-			if (requested_manual_command != AUTON_CHAR)
-			{
-				return 0;
-			}  // if (requested_manual_command != AUTON_CHAR)
+			if (requested_manual_command != AUTON_CHAR) return 0;
 
-			if(distance_right_cm < 16)
+			if(distance_right_cm < WALL_DISTANCE_CM)
 			{
 				maze.cell_grid[c.y][c.x].walls[(direction + 1) % 4] = Wall_Here;
 				switch(direction)
@@ -370,10 +394,7 @@ uint8_t do_flood_fill_algorithm()
 
 			}  // if(is_there_wall_on_direction(Right))
 
-			if (requested_manual_command != AUTON_CHAR)
-			{
-				return 0;
-			}  // if (requested_manual_command != AUTON_CHAR)
+			if (requested_manual_command != AUTON_CHAR) return 0;
 
 			maze.cell_grid[c.y][c.x].visited = 1;
 
@@ -417,10 +438,14 @@ uint8_t do_flood_fill_algorithm()
 		{
 			while(!stack_is_empty(&stack))
 			{
-				if (requested_manual_command != AUTON_CHAR)
+				if (stack.index >= 60)
 				{
+					char buf3[20];
+					sprintf((char *)buf3, "&FAILED,,,,,,,,,,,,");
+					HAL_UART_Transmit(&huart6, buf3, sizeof(buf3), 1000);
 					return 0;
-				}  // if (requested_manual_command != AUTON_CHAR)
+				}  // if (stack.index >= 100)
+				if (requested_manual_command != AUTON_CHAR) return 0;
 				// get the cell to test from the stack
 				next_coordinate = pop_stack(&stack);
 				// find a neighbor cell with distance one less than current
