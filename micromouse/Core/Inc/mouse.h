@@ -8,6 +8,9 @@
 #include "ultrasonic.h"
 #include "main.h"
 #include "manual_control.h"
+#include "wall_sensor.h"
+
+void recalibrate_by_adjust_forward();
 
 void recalibrate_by_turning();
 
