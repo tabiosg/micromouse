@@ -52,7 +52,6 @@ default.size.stdout \
 OBJDUMP_LIST += \
 micromouse.list \
 
-
 # All Target
 all: main-build
 

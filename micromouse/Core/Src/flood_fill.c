@@ -98,7 +98,7 @@ uint8_t do_flood_fill_algorithm()
 		if(c.y + 1 < MAP_SIZE) maze.cell_grid[c.y + 1][c.x].walls[South] = Wall_Here;
 
 	}  // if(is_there_wall_on_direction(Front))
-
+  
 	if (requested_manual_command != AUTON_CHAR) return 0;
 
 	if(is_there_wall_on_direction(Right))
@@ -182,8 +182,7 @@ uint8_t do_flood_fill_algorithm()
 
 		LEFT_MOTOR_MULT = LEFT_MOTOR_MULT_DEFAULT;
 		RIGHT_MOTOR_MULT = RIGHT_MOTOR_MULT_DEFAULT;
-
-
+    
 		if(!maze.cell_grid[c.y][c.x].visited)
 		{
 			// Move in direction for unvisited cell
@@ -212,11 +211,13 @@ uint8_t do_flood_fill_algorithm()
 
 			set_servo_angle(Front);
 			HAL_Delay(1000);
+
 			float distance_front_cm = distance_of_object_in_cm();
 
 			char buf_front[20];
 			printf(distance_front_cm < WALL_DISTANCE_CM ? "There is a wall in front.\r\n" : "There is no wall in front.\r\n");
 			memcpy(buf_front, distance_front_cm < WALL_DISTANCE_CM ? "%FRONT,1,,,,,,,,,,," : "%FRONT,0,,,,,,,,,,,", 20);
+
 			HAL_UART_Transmit(&huart6, buf_front, sizeof(buf_front), 1000);
 
 
@@ -224,8 +225,10 @@ uint8_t do_flood_fill_algorithm()
 			HAL_Delay(1000);
 			float distance_left_cm = distance_of_object_in_cm();
 			char buf_left[20];
+
 			printf(distance_left_cm < WALL_DISTANCE_CM ? "There is a wall on the left.\r\n" : "There is no wall on the left.\r\n");
 			memcpy(buf_left, distance_left_cm < WALL_DISTANCE_CM ? "\%LEFT,1,,,,,,,,,,,," : "\%LEFT,0,,,,,,,,,,,,", 20);
+
 			HAL_UART_Transmit(&huart6, buf_left, sizeof(buf_left), 1000);
 
 
@@ -235,11 +238,14 @@ uint8_t do_flood_fill_algorithm()
 			float distance_right_cm = distance_of_object_in_cm();
 
 			char buf_right[20];
+
 			printf(distance_right_cm < WALL_DISTANCE_CM ? "There is a wall on the right.\r\n" : "There is no wall on the right.\r\n");
 			memcpy(buf_right, distance_right_cm < WALL_DISTANCE_CM ? "%RIGHT,1,,,,,,,,,,," : "%RIGHT,0,,,,,,,,,,,", 20);
+
 			HAL_UART_Transmit(&huart6, buf_right, sizeof(buf_right), 1000);
 
 			set_servo_angle(Front);
+
 
 //			if (distance_left_cm < WALL_DISTANCE_CM && distance_right_cm < WALL_DISTANCE_CM)
 //			{

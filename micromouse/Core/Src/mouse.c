@@ -181,4 +181,4 @@ void go_forward_one_unit()
 	calibrate_at_walls();
 	recalibrate_by_turning();
 	recalibrate_by_adjust_forward();
-}  // go_forward()
+}  // go_forward_one_unit()
