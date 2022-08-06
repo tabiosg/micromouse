@@ -1,5 +1,7 @@
 # Micromouse
 
+<img src="https://user-images.githubusercontent.com/71603173/183257361-174de9f3-0ced-4d2f-ab51-1513a5d51f29.jpg" height=400> <img src="https://user-images.githubusercontent.com/71603173/183257370-1f89a8ac-3b1a-450b-acdc-89bb1d2a6e38.jpg" height=400>
+
 For EECS 373, our group decided on making a maze-solving robot project. It served its purpose for our class final presentation, demonstration, and exposition. Created by Abdel, Alan, and Guthrie.
 
 ---
